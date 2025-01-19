@@ -1,7 +1,7 @@
 <template>
   <div class="login-container">
     <div class="login-box">
-      <h1>Login</h1>
+      <h1>Login Inteligência IB</h1>
       <form @submit.prevent="handleSubmit">
         <input
           v-model="email"
@@ -33,38 +33,39 @@ export default {
   setup() {
     const email = ref("");
     const password = ref("");
-    const notification = ref(""); // Estado para mensagens dinâmicas
+    const notification = ref("");
     const router = useRouter();
 
     const handleSubmit = async () => {
-  try {
-    const { error } = await supabase.auth.signInWithPassword({
-      email: email.value,
-      password: password.value,
-    });
-
-    if (error) {
-      // Modifica a mensagem de erro com base no código ou na mensagem original
-      if (error.message.includes("Invalid login credentials")) {
-        notification.value = "Email ou senha incorretos. Por favor, tente novamente.";
-      } else if (error.message.includes("Email not confirmed")) {
-        notification.value = "Por favor, confirme seu email antes de fazer login.";
-      } else {
-        notification.value = "Erro ao fazer login: " + error.message;
+      try {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: email.value,
+          password: password.value,
+        });
+        if (error) {
+          console.log('Login error:', error.message); // Adicionado console.log para exibir a mensagem de erro
+          if (error.message === 'Invalid login credentials') {
+            notification.value = 'Email ou senha incorretos.';
+          } else if (error.message === 'User not found') {
+            notification.value = 'Solicite acesso à plataforma.';
+          } else {
+            notification.value = 'Erro ao fazer login. Tente novamente.';
+          }
+        } else {
+          router.push('/home');
+        }
+      } catch (error) {
+        console.error('Error logging in:', error.message);
+        notification.value = 'Erro ao fazer login. Tente novamente.';
       }
-      console.log("Erro:", error.message);
-    } else {
-      notification.value = "Login bem-sucedido!";
-      console.log("Login bem-sucedido");
-      router.push({ name: "HomePage" });
-    }
-  } catch (err) {
-    notification.value = "Erro inesperado no login.";
-    console.error("Erro:", err);
-  }
-};
+    };
 
-    return { email, password, notification, handleSubmit };
+    return {
+      email,
+      password,
+      notification,
+      handleSubmit,
+    };
   },
 };
 </script>

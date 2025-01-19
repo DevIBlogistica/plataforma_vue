@@ -10,3 +10,36 @@ const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default supabase;
+
+// Função para fazer logout
+export async function logout() {
+  const { error } = await supabase.auth.signOut();
+  if (error) {
+    console.error('Error logging out:', error.message);
+    throw error;
+  }
+}
+
+// Função para obter dados do usuário
+export async function getUserData() {
+  const { data: { user }, error } = await supabase.auth.getUser();
+  if (error) {
+    console.error('Error fetching user data:', error.message);
+    throw error;
+  }
+  if (user) {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('name, cargo')
+      .eq('user_id', user.id)
+      .single();
+    if (error) {
+      console.error('Error fetching profile data:', error.message);
+      throw error;
+    }
+    console.log('User data fetched:', data);
+    return data;
+  }
+  console.log('No user logged in');
+  return null;
+}
