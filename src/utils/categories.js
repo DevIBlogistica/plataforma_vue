@@ -7,4 +7,5 @@ export const categories = {
   Operacional: ["Máquina", "Operador"],
   "Controle de Fluídos": ["Relatórios", "Painel"],
   Bonificacões: ["Individuais", "Geral"],
+  "Controle de Acesso":["Cadastros","Histórico"]
 };
