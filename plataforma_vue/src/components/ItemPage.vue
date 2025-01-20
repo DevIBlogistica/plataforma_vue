@@ -7,7 +7,8 @@
   
   <script>
   export default {
-    props: ["category", "item"],
+    name: 'ItemPage',
+    props: ['category', 'item'],
   };
   </script>
   

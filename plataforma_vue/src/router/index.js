@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import LoginPage from '@/views/LoginPage.vue'; // Página de login
-import HomePage from '@/views/HomePage.vue'; // Página inicial
-import ItemPage from '@/components/ItemPage.vue'; // Página de item dinâmica
-import { categories } from "@/utils/categories"; // Importa a estrutura de dados
+import LoginPage from '@/views/LoginPage.vue'; // Certifique-se de que o caminho está correto
+import HomePage from '@/views/HomePage.vue'; // Certifique-se de que o caminho está correto
+import ItemPage from '@/components/ItemPage.vue'; // Certifique-se de que o caminho está correto
+import { categories } from "@/utils/categories"; // Certifique-se de que o caminho está correto
 
 // Cria rotas dinamicamente com base na estrutura de categorias
 const dynamicRoutes = Object.entries(categories).flatMap(([category, items]) =>
@@ -22,7 +22,7 @@ const routes = [
   },
   {
     path: '/login',
-    name: 'LoginPage', 
+    name: 'ReturnLoginPage', 
     component: LoginPage,
   },
   {

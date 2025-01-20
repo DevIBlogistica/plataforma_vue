@@ -15,7 +15,7 @@
 import Sidebar from "@/components/Sidebar.vue"; // Importa o componente Sidebar
 import Navbar from "@/components/Navbar.vue"; // Importa o componente Navbar
 
-export default {
+export default {name: "HomePage", // Define o nome do componente
   components: { Sidebar, Navbar }, // Registra os componentes Sidebar e Navbar para uso neste componente
 };
 </script>
