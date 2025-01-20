@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import LoginPage from '@/views/LoginPage.vue'; // Certifique-se de que o caminho está correto
-import HomePage from '@/views/HomePage.vue'; // Certifique-se de que o caminho está correto
-import ItemPage from '@/components/ItemPage.vue'; // Certifique-se de que o caminho está correto
-import { categories } from "@/utils/categories"; // Certifique-se de que o caminho está correto
+import LoginPage from '@/views/LoginPage.vue'; 
+import HomePage from '@/views/HomePage.vue'; 
+import ItemPage from '@/components/ItemPage.vue';
+import { categories } from "@/utils/categories";
+import ControleAcesso from '@/components/ControleAcesso.vue';
 
 // Cria rotas dinamicamente com base na estrutura de categorias
 const dynamicRoutes = Object.entries(categories).flatMap(([category, items]) =>
@@ -31,6 +32,11 @@ const routes = [
     component: HomePage,
   },
   {
+    path: '/controle-de-acesso',
+    name: 'ControleAcesso',
+    component: ControleAcesso,
+  },
+  {
     path: "/:category/:item", // Rota dinâmica com categoria e item
     name: "item",
     component: ItemPage,
@@ -45,3 +51,9 @@ const router = createRouter({
 });
 
 export default router;
+
+/*xport default new VueRouter({
+  mode: 'history',
+  base: process.env.BASE_URL,
+  routes,
+});*/

@@ -24,7 +24,18 @@
               <div v-show="isOpen(category)" class="translate transform overflow-hidden">
                 <ul class="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                   <li v-for="item in items" :key="item">
-                    <a href="#" class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white">
+                    <router-link
+                      v-if="category === 'Controle de Acesso' && item === 'Cadastros'"
+                      :to="'/controle-de-acesso'"
+                      class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
+                    >
+                      {{ item }}
+                    </router-link>
+                    <a
+                      v-else
+                      href="#"
+                      class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
+                    >
                       {{ item }}
                     </a>
                   </li>
@@ -39,31 +50,27 @@
 </template>
 
 <script>
-import { categories } from "@/utils/categories"; // Importa o objeto de categorias
+import { ref } from 'vue';
+import { categories } from '@/utils/categories.js';
 
 export default {
   name: 'Sidebar',
-  data() {
-    return {
-      categories, // Usa o objeto de categorias importado
-      openCategory: null, // Estado para controlar qual categoria está aberta
+  setup() {
+    const openCategory = ref(null);
+
+    const toggleDropdown = (category) => {
+      openCategory.value = openCategory.value === category ? null : category;
     };
-  },
-  methods: {
-    toggleDropdown(category) {
-      if (this.openCategory === category) {
-        this.openCategory = null;
-      } else {
-        this.openCategory = category;
-      }
-    },
-    isOpen(category) {
-      return this.openCategory === category;
-    },
+
+    const isOpen = (category) => {
+      return openCategory.value === category;
+    };
+
+    return {
+      categories,
+      toggleDropdown,
+      isOpen,
+    };
   },
 };
 </script>
-
-<style scoped>
-/* Estilos adicionais podem ser adicionados aqui, se necessário */
-</style>

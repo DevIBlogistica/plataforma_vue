@@ -1,17 +1,20 @@
 <template>
   <header class="sticky top-0 z-999 flex w-full bg-white drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
-    <div class="flex flex-grow items-center justify-between py-4 px-4 shadow-2 md:px-6 2xl:px-11">
+    <div class="flex flex-grow items-center justify-between py-2 px-4 shadow-2 md:px-6 2xl:px-11">
       <div class="hidden sm:block"></div>
-      <div class="flex items-center gap-3 2xsm:gap-7">
+      <div class="flex items-center gap-3 2xsm:gap-3">
         <div class="relative">
-          <a aria-current="page" class="router-link-active router-link-exact-active flex items-center gap-4">
+          <a aria-current="page" class="router-link-active router-link-exact-active flex items-center gap-3">
             <span class="hidden text-right lg:block">
               <span class="block text-sm font-medium text-black dark:text-white">{{ userName }}</span>
               <span class="block text-xs font-medium">{{ userCargo }}</span>
             </span>
           </a>
         </div>
-        <button @click="handleLogout" class="flex items-center gap-3.5 py-4 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">     
+        <router-link v-if="isAdmin" to="/controle-de-acesso" class="flex items-center gap-3 py-2 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+          Painel
+        </router-link>
+        <button @click="handleLogout" class="flex items-center gap-3 py-2 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
           Sair
           <svg class="fill-current" width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M15.5375 0.618744H11.6531C10.7594 0.618744 10.0031 1.37499 10.0031 2.26874V4.64062C10.0031 5.05312 10.3469 5.39687 10.7594 5.39687C11.1719 5.39687 11.55 5.05312 11.55 4.64062V2.23437C11.55 2.16562 11.5844 2.13124 11.6531 2.13124H15.5375C16.3625 2.13124 17.0156 2.78437 17.0156 3.60937V18.3562C17.0156 19.1812 16.3625 19.8344 15.5375 19.8344H11.6531C11.5844 19.8344 11.55 19.8 11.55 19.7312V17.3594C11.55 16.9469 11.2062 16.6031 10.7594 16.6031C10.3125 16.6031 10.0031 16.9469 10.0031 17.3594V19.7312C10.0031 20.625 10.7594 21.3812 11.6531 21.3812H15.5375C17.2219 21.3812 18.5625 20.0062 18.5625 18.3562V3.64374C18.5625 1.95937 17.1875 0.618744 15.5375 0.618744Z" fill=""></path>
@@ -24,36 +27,37 @@
 </template>
 
 <script>
+import { ref, onMounted } from 'vue';
 import { logout, getUserData } from "@/utils/supabase";
 
 export default {
-  data() {
-    return {
-      userName: 'Nome Vazio',
-      userCargo: 'Cargo Vazio',
+  setup() {
+    const userName = ref('Nome Vazio');
+    const userCargo = ref('Cargo Vazio');
+    const isAdmin = ref(false);
+
+    const handleLogout = async () => {
+      await logout();
+      window.location.href = '/login';
     };
-  },
-  methods: {
-    async handleLogout() {
-      try {
-        await logout();
-        this.$router.push('/login');
-      } catch (error) {
-        console.error('Error logging out:', error.message);
+
+    const fetchUserData = async () => {
+      const user = await getUserData();
+      if (user) {
+        userName.value = user.nome;
+        userCargo.value = user.cargo;
+        isAdmin.value = user.adminProfile;
       }
-    },
-  },
-  async mounted() {
-    try {
-      const userData = await getUserData();
-      console.log('User data in Navbar:', userData);
-      if (userData) {
-        this.userName = userData.name || 'Nome Vazio';
-        this.userCargo = userData.cargo || 'Cargo Vazio';
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error.message);
-    }
+    };
+
+    onMounted(fetchUserData);
+
+    return {
+      userName,
+      userCargo,
+      isAdmin,
+      handleLogout,
+    };
   },
 };
 </script>
@@ -67,5 +71,22 @@ export default {
 }
 .drop-shadow-1 {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra */
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  background-color: #333;
+  color: white;
+}
+
+.navbar-content {
+  display: flex;
+  gap: 10px;
+}
+
+.router-link-active {
+  font-weight: bold;
 }
 </style>
