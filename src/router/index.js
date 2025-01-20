@@ -4,6 +4,8 @@ import HomePage from '@/views/HomePage.vue';
 import ItemPage from '@/components/ItemPage.vue';
 import { categories } from "@/utils/categories";
 import ControleAcesso from '@/components/ControleAcesso.vue';
+import ChangePasswordPage from '@/views/ChangePasswordPage.vue';
+
 
 // Cria rotas dinamicamente com base na estrutura de categorias
 const dynamicRoutes = Object.entries(categories).flatMap(([category, items]) =>
@@ -41,6 +43,11 @@ const routes = [
     name: "item",
     component: ItemPage,
     props: true, // Passa "category" e "item" como props para ItemPage
+  },
+  {
+    path: '/change-password',
+    name: 'ChangePasswordPage',
+    component: ChangePasswordPage,
   },
   ...dynamicRoutes, // Adiciona as rotas dinâmicas
 ];
