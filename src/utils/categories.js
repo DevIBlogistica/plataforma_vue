@@ -8,5 +8,5 @@ export const categories = {
   "Controle de Fluídos": ["Relatórios", "Painel"],
   Bonificacões: ["Individuais", "Geral"],
   "Controle de Acesso":["Cadastros","Histórico"],
-  "MENU NOVO DE TESTE":"ITEM TESTE"
+  "MENU NOVO DE TESTE":["ITEM TESTE"]
 };
