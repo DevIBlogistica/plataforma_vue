@@ -4,20 +4,72 @@
       <div class="layout">
         <Sidebar />
         <div class="main-content">
-          <div class="controle-acesso">
-            <h2>Criar Novo Usuário</h2>
-            <form @submit.prevent="handleSubmit">
-              <input v-model="nome" type="text" placeholder="Nome" required />
-              <input v-model="cargo" type="text" placeholder="Cargo" required />
-              <input v-model="email" type="email" placeholder="Email" required />
-              <input v-model="senha" type="password" placeholder="Senha" required />
-              <label class="checkbox-label">
-                <input v-model="adminProfile" type="checkbox" />
-                Admin Profile
-              </label>
-              <button type="submit">Salvar</button>
-              <p v-if="notification" class="notification">{{ notification }}</p>
-            </form>
+          <div class="form-container">
+            <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+              <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+                <h3 class="font-medium text-black dark:text-white text-center">Cadastro de usuário</h3>
+              </div>
+              <form @submit.prevent="handleSubmit">
+                <div class="p-6.5">
+                  <div class="mb-5">
+                    <input v-model="nome" type="text" placeholder="Nome" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
+                  </div>
+                  <div class="mb-5">
+                    <input v-model="cargo" type="text" placeholder="Cargo" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
+                  </div>
+                  <div class="mb-5">
+                    <input v-model="email" type="email" placeholder="Email" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
+                  </div>
+                  <div class="mb-5">
+                    <input v-model="senha" type="password" placeholder="Senha" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
+                  </div>
+                  <div class="mb-5.5">
+                    <label for="adminProfile" class="mb-4.5 block text-sm font-medium text-black dark:text-white text-center">Permissão de usuário</label>
+                    <div class="flex gap-2.5 justify-center">
+                      <div>
+                        <label class="relative flex cursor-pointer select-none items-center gap-2 text-sm font-medium text-black dark:text-white">
+                          <input v-model="adminProfile" type="radio" name="adminProfile" :value="false" class="sr-only">
+                          <span class="flex h-5 w-5 items-center justify-center rounded-full border border-primary">
+                            <span class="h-2.5 w-2.5 rounded-full bg-primary" :class="{'hidden': adminProfile}"></span>
+                          </span>
+                          Padrão
+                        </label>
+                      </div>
+                      <div>
+                        <label class="relative flex cursor-pointer select-none items-center gap-2 text-sm font-medium text-black dark:text-white">
+                          <input v-model="adminProfile" type="radio" name="adminProfile" :value="true" class="sr-only">
+                          <span class="flex h-5 w-5 items-center justify-center rounded-full border border-body">
+                            <span class="h-2.5 w-2.5 rounded-full bg-primary" :class="{'hidden': !adminProfile}"></span>
+                          </span>
+                          Administrador
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">Cadastrar</button>
+                  <p v-if="notification" class="notification">{{ notification }}</p>
+                </div>
+              </form>
+            </div>
+          </div>
+          <div class="table-container">
+            <h3 class="font-medium text-black dark:text-white">Usuários Cadastrados</h3>
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                  <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cargo</th>
+                  <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admin</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-gray-200">
+                <tr v-for="user in users" :key="user.id">
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.nome }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.cargo }}</td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.adminProfile ? 'Sim' : 'Não' }}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -25,7 +77,7 @@
   </template>
   
   <script>
-  import { ref } from 'vue';
+  import { ref, onMounted } from 'vue';
   import supabase from '@/utils/supabase';
   import Navbar from './Navbar.vue';
   import Sidebar from './Sidebar.vue';
@@ -43,10 +95,22 @@
       const senha = ref('');
       const adminProfile = ref(false);
       const notification = ref('');
+      const users = ref([]);
   
       const validateEmail = (email) => {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         return re.test(String(email).toLowerCase());
+      };
+  
+      const fetchUsers = async () => {
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('id, nome, cargo, adminProfile');
+        if (error) {
+          console.error('Erro ao buscar usuários:', error.message);
+        } else {
+          users.value = data;
+        }
       };
   
       const handleSubmit = async () => {
@@ -112,7 +176,12 @@
         email.value = '';
         senha.value = '';
         adminProfile.value = false;
+  
+        // Atualizar a lista de usuários
+        fetchUsers();
       };
+  
+      onMounted(fetchUsers);
   
       return {
         nome,
@@ -121,6 +190,7 @@
         senha,
         adminProfile,
         notification,
+        users,
         handleSubmit,
       };
     },
@@ -138,52 +208,13 @@
     min-height: 100vh; /* Garante que o conteúdo ocupe pelo menos a altura da tela */
   }
   
-  .controle-acesso {
+  .form-container {
     max-width: 400px;
-    margin: 50px auto;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #fff; /* Adiciona um fundo branco */
+    margin: 0 auto;
   }
   
-  .controle-acesso h2 {
-    margin-bottom: 20px;
-  }
-  
-  .controle-acesso form {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .controle-acesso form input {
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .controle-acesso form label.checkbox-label {
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-  }
-  
-  .controle-acesso form label.checkbox-label input {
-    margin-right: 10px;
-  }
-  
-  .controle-acesso form button {
-    padding: 10px;
-    background-color: #333;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .controle-acesso form button:hover {
-    background-color: #555;
+  .table-container {
+    margin-top: 20px;
   }
   
   .notification {
