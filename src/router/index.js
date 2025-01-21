@@ -22,10 +22,10 @@ const routes = [
     component: ControleAcesso,
   },
   {
-    path: '/item/:category/:item', // Rota dinâmica com categoria e item
+    path: '/item/:category/:item',
     name: 'Item',
     component: ItemPage,
-    props: true, // Passa "category" e "item" como props para ItemPage
+    props: true,
   },
   {
     path: '/change-password',

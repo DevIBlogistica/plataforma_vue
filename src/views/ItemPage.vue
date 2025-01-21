@@ -31,7 +31,7 @@
 
 <script>
 import Sidebar from '@/components/Sidebar.vue';
-import Navbar from '@/components/Navbar.vue';  
+import Navbar from '@/components/Navbar.vue';
 import Ticker from '@/components/Ticker.vue';
 import { pagesConfig } from '@/utils/pages.Config';
 
@@ -42,20 +42,34 @@ export default {
     Navbar,
     Ticker,
   },
+  props: {
+    category: String,
+    item: String,
+  },
   data() {
     return {
       tabs: [],
       selectedTab: {},
     };
   },
-  created() {
-    const { category, item } = this.$route.params;
-    if (pagesConfig[category] && pagesConfig[category][item]) {
-      this.tabs = pagesConfig[category][item].tabs;
-      this.selectedTab = this.tabs[0];
-    }
+  watch: {
+    '$route.params': {
+      handler: 'updateTabs',
+      immediate: true,
+    },
   },
   methods: {
+    updateTabs() {
+      const { category, item } = this.$route.params;
+      const categoryConfig = pagesConfig[category];
+      if (categoryConfig) {
+        const itemConfig = categoryConfig[item];
+        if (itemConfig) {
+          this.tabs = itemConfig.tabs || [];
+          this.selectedTab = this.tabs[0] || {};
+        }
+      }
+    },
     selectTab(tab) {
       this.selectedTab = tab;
     },

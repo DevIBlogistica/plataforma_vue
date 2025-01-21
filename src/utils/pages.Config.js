@@ -5,7 +5,7 @@ export const pagesConfig = {
     Arakaki: {
       tabs: [
         // Arakaki Aba 1
-        { name: 'Arakaki Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        { name: 'Arakaki Aba 1', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' },
         // Arakaki Aba 2
         { name: 'Arakaki Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
@@ -54,7 +54,7 @@ export const pagesConfig = {
     'Frente 1': {
       tabs: [
         // Frente 1 Aba 1
-        { name: 'Frente 1 Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        { name: 'Frente 1 Aba 1', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' },
         // Frente 1 Aba 2
         { name: 'Frente 1 Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
@@ -63,7 +63,7 @@ export const pagesConfig = {
     'Frente 2': {
       tabs: [
         // Frente 2 Aba 1
-        { name: 'Frente 2 Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        { name: 'Frente 2 Aba 1', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' },
         // Frente 2 Aba 2
         { name: 'Frente 2 Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
@@ -72,7 +72,7 @@ export const pagesConfig = {
     'Frente 3': {
       tabs: [
         // Frente 3 Aba 1
-        { name: 'Frente 3 Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        { name: 'Frente 3 Aba 1', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' },
         // Frente 3 Aba 2
         { name: 'Frente 3 Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
@@ -81,7 +81,7 @@ export const pagesConfig = {
     'Frente 4': {
       tabs: [
         // Frente 4 Aba 1
-        { name: 'Frente 4 Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        { name: 'Frente 4 Aba 1', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' },
         // Frente 4 Aba 2
         { name: 'Frente 4 Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
@@ -93,7 +93,7 @@ export const pagesConfig = {
     'Frente 1': {
       tabs: [
         // Frente 1 Aba 1
-        { name: 'Frente 1 Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        { name: 'Plantio Diário', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
         // Frente 1 Aba 2
         { name: 'Frente 1 Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
@@ -105,7 +105,7 @@ export const pagesConfig = {
     Máquina: {
       tabs: [
         // Máquina Aba 1
-        { name: 'Máquina Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        { name: 'Máquina Aba 1', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' },
         // Máquina Aba 2
         { name: 'Máquina Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
@@ -114,7 +114,7 @@ export const pagesConfig = {
     Operador: {
       tabs: [
         // Operador Aba 1
-        { name: 'Operador Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        { name: 'Operador Aba 1', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' },
         // Operador Aba 2
         { name: 'Operador Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
@@ -127,7 +127,7 @@ export const pagesConfig = {
     Relatórios: {
       tabs: [
         // Relatórios Aba 1
-        { name: 'Relatórios Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        { name: 'Relatórios Aba 1', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' },
         // Relatórios Aba 2
         { name: 'Relatórios Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
@@ -140,7 +140,7 @@ export const pagesConfig = {
     'Geral': {
       tabs: [
         // Geral Aba 1
-        { name: 'Geral Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        { name: 'Geral Aba 1', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' },
         // Geral Aba 2
         { name: 'Geral Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
@@ -150,7 +150,7 @@ export const pagesConfig = {
     'Individuais': {
       tabs: [
         // Individuais Aba 1
-        { name: 'Individuais Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        { name: 'Individuais Aba 1', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' },
         // Individuais Aba 2
         { name: 'Individuais Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
@@ -160,12 +160,12 @@ export const pagesConfig = {
   'Controle de Acesso': {
    // Controle de Acesso Item
    Cadastros: {
-    tabs: []
+    path: '/controle-de-acesso',
   },
   
    // Controle de Acesso Item
    Histórico: {
-    tabs: []
+    path: '/controle-de-acesso',
   },
   }
 };

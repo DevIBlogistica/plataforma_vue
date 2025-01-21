@@ -25,6 +25,14 @@
                 <ul class="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                   <li v-for="(page, item) in items" :key="item">
                     <router-link
+                      v-if="category === 'Controle de Acesso'"
+                      :to="page.path"
+                      class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
+                    >
+                      {{ item }}
+                    </router-link>
+                    <router-link
+                      v-else
                       :to="{ name: 'Item', params: { category, item } }"
                       class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
                     >
