@@ -3,21 +3,25 @@
     <Sidebar />
     <div class="main-content">
       <Navbar />
-      <div class="content-container">           
+      <div class="content-container full-screen">           
         <div class="main-column">
           <div class="rounded-sm border border-stroke bg-white shadow-default">
             <div class="px-4 py-2">
               <div class="tabs-container flex flex-wrap gap-5 border-b border-stroke sm:gap-10">
-                <a aria-current="page" href="/ui-elements/tabs" class="router-link-active router-link-exact-active border-transparent border-b-2 py-4 text-sm font-medium hover:text-primary md:text-base">Profile</a>
-                <a aria-current="page" href="/ui-elements/tabs" class="router-link-active router-link-exact-active border-transparent border-b-2 py-4 text-sm font-medium hover:text-primary md:text-base">Password</a>
-                <a aria-current="page" href="/ui-elements/tabs" class="router-link-active router-link-exact-active border-transparent border-b-2 py-4 text-sm font-medium hover:text-primary md:text-base">Team</a>
-                <a aria-current="page" href="/ui-elements/tabs" class="router-link-active router-link-exact-active text-primary border-primary border-b-2 py-4 text-sm font-medium hover:text-primary md:text-base">Notification</a>
+                <a
+                  v-for="tab in tabs"
+                  :key="tab.name"
+                  href="#"
+                  @click.prevent="selectTab(tab)"
+                  :class="{'text-primary border-primary': selectedTab.name === tab.name, 'border-transparent': selectedTab.name !== tab.name}"
+                  class="router-link-active router-link-exact-active border-b-2 py-4 text-sm font-medium hover:text-primary md:text-base"
+                >
+                  {{ tab.name }}
+                </a>
               </div>                  
             </div>
           </div>
-          <div class="embed-container full-screen">
-            <iframe class="embed-content full-screen" src="https://www.accuweather.com/pt/br/orindi%C3%BAva/36746/weather-radar/36746" allowfullscreen></iframe>
-          </div>
+          <div class="embed-container" v-html="selectedTab.content"></div>
         </div>
       </div>
       <Ticker />
@@ -27,8 +31,9 @@
 
 <script>
 import Sidebar from '@/components/Sidebar.vue';
-import Navbar from '@/components/Navbar.vue';
+import Navbar from '@/components/Navbar.vue';  
 import Ticker from '@/components/Ticker.vue';
+import { pagesConfig } from '@/utils/pages.Config';
 
 export default {
   name: 'ItemPage',
@@ -36,6 +41,24 @@ export default {
     Sidebar,
     Navbar,
     Ticker,
+  },
+  data() {
+    return {
+      tabs: [],
+      selectedTab: {},
+    };
+  },
+  created() {
+    const { category, item } = this.$route.params;
+    if (pagesConfig[category] && pagesConfig[category][item]) {
+      this.tabs = pagesConfig[category][item].tabs;
+      this.selectedTab = this.tabs[0];
+    }
+  },
+  methods: {
+    selectTab(tab) {
+      this.selectedTab = tab;
+    },
   },
 };
 </script>
@@ -63,20 +86,9 @@ export default {
   flex-direction: column;
 }
 
-.tabs-container {
-  flex: 0; /* Ensure tabs container does not stretch */
-  border-radius: 5px;
-}
-
 .embed-container {
   flex: 1;
   display: flex;
-  
-}
-
-.embed-content {
-  flex: 1;
-  border-radius: 5px;
 }
 
 .full-screen {

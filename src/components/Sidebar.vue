@@ -14,7 +14,7 @@
       <nav class="mt-5 py-4 px-4 lg:mt-9 lg:px-6">
         <div>
           <ul class="mb-6 flex flex-col gap-1.5">
-            <li v-for="(items, category) in categories" :key="category">
+            <li v-for="(items, category) in pagesConfig" :key="category">
               <a href="#" @click.prevent="toggleDropdown(category)" class="group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4">
                 <span>{{ category }}</span>
                 <svg :class="{'rotate-180': isOpen(category)}" class="absolute right-4 top-1/2 -translate-y-1/2 fill-current transition-transform duration-300" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -23,7 +23,7 @@
               </a>
               <div v-show="isOpen(category)" class="translate transform overflow-hidden">
                 <ul class="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
-                  <li v-for="item in items" :key="item">
+                  <li v-for="(page, item) in items" :key="item">
                     <router-link
                       :to="{ name: 'Item', params: { category, item } }"
                       class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
@@ -43,26 +43,27 @@
 
 <script>
 import { ref } from 'vue';
-import { categories } from '@/utils/categories.js';
+import { pagesConfig } from '@/utils/pages.Config';
 
 export default {
   name: 'Sidebar',
   setup() {
     const openCategory = ref(null);
-
     const toggleDropdown = (category) => {
       openCategory.value = openCategory.value === category ? null : category;
     };
-
     const isOpen = (category) => {
       return openCategory.value === category;
     };
-
     return {
-      categories,
+      pagesConfig,
       toggleDropdown,
       isOpen,
     };
   },
 };
 </script>
+
+<style scoped>
+/* Estilo original da Sidebar */
+</style>
