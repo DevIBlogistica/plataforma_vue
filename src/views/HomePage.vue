@@ -11,13 +11,7 @@
           </div>
         </div>
         <!-- Informações adicionais -->
-        <div class="ticker-container">
-          <div class="ticker">
-            <div class="ticker-item">Preço médio do diesel: R$ 5,00</div>
-            <div class="ticker-item">Outra informação interessante</div>
-            <div class="ticker-item">Mais uma informação</div>
-          </div>
-        </div>
+        <Ticker />
       </div>
     </div>
   </div>
@@ -26,12 +20,14 @@
 <script>
 import Sidebar from '@/components/Sidebar.vue';
 import Navbar from '@/components/Navbar.vue';
+import Ticker from '@/components/Ticker.vue';
 
 export default {
   name: 'HomePage',
   components: {
     Sidebar,
     Navbar,
+    Ticker,
   },
 };
 </script>
@@ -51,7 +47,7 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 10px;
 }
 
 .main-column {
@@ -69,36 +65,7 @@ export default {
 .embed-content {
   width: 100%;
   height: 100%;
-  border: none;
+  border-radius: 5px;
 }
 
-.ticker-container {
-  width: 100%;
-  overflow: hidden;
-  background-color: #f4f4f9;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin-top: 20px;
-}
-
-.ticker {
-  display: flex;
-  animation: ticker 30s linear infinite;
-}
-
-.ticker-item {
-  flex: none;
-  padding: 0 20px;
-  white-space: nowrap;
-}
-
-@keyframes ticker {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(-100%);
-  }
-}
 </style>
