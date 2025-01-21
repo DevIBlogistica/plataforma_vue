@@ -102,49 +102,70 @@ export const pagesConfig = {
   // Operacional Category
   Operacional: {
     // Operacional Item
-    Operacional: {
+    Máquina: {
       tabs: [
-        // Operacional Aba 1
-        { name: 'Operacional Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
-        // Operacional Aba 2
-        { name: 'Operacional Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
+        // Máquina Aba 1
+        { name: 'Máquina Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        // Máquina Aba 2
+        { name: 'Máquina Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
     },
+    // Operacional Item
+    Operador: {
+      tabs: [
+        // Operador Aba 1
+        { name: 'Operador Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        // Operador Aba 2
+        { name: 'Operador Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
+      ]
+    },
+    
   },
   // Controle de Fluídos Category
   'Controle de Fluídos': {
     // Controle de Fluídos Item
-    'Controle de Fluídos': {
+    Relatórios: {
       tabs: [
-        // Controle de Fluídos Aba 1
-        { name: 'Controle de Fluídos Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
-        // Controle de Fluídos Aba 2
-        { name: 'Controle de Fluídos Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
+        // Relatórios Aba 1
+        { name: 'Relatórios Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        // Relatórios Aba 2
+        { name: 'Relatórios Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
     },
+    
   },
   // Bonificações Category
   Bonificações: {
     // Bonificações Item
-    'Bonificações': {
+    'Geral': {
       tabs: [
-        // Bonificações Aba 1
-        { name: 'Bonificações Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
-        // Bonificações Aba 2
-        { name: 'Bonificações Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
+        // Geral Aba 1
+        { name: 'Geral Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        // Geral Aba 2
+        { name: 'Geral Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
+      ]
+    },
+    
+    // Bonificações Item
+    'Individuais': {
+      tabs: [
+        // Individuais Aba 1
+        { name: 'Individuais Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
+        // Individuais Aba 2
+        { name: 'Individuais Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
       ]
     },
   },
   // Controle de Acesso Category
   'Controle de Acesso': {
    // Controle de Acesso Item
-   'Controle de Acesso': {
-    tabs: [
-      // Controle de Acesso Aba 1
-      { name: 'Controle de Acesso Aba 1', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
-      // Controle de Acesso Aba 2
-      { name: 'Controle de Acesso Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
-    ]
+   Cadastros: {
+    tabs: []
+  },
+  
+   // Controle de Acesso Item
+   Histórico: {
+    tabs: []
   },
   }
 };
