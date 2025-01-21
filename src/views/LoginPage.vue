@@ -38,21 +38,28 @@ export default {
 
     const handleSubmit = async () => {
       try {
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email: email.value,
           password: password.value,
         });
+
         if (error) {
-          console.log('Login error:', error.message); // Adicionado console.log para exibir a mensagem de erro
-          if (error.message === 'Invalid login credentials') {
-            notification.value = 'Email ou senha incorretos.';
-          } else if (error.message === 'User not found') {
-            notification.value = 'Solicite acesso à plataforma.';
+          console.log('Login error:', error.message);
+          notification.value = 'Erro ao fazer login. Tente novamente.';
+        } else if (data.user) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('firstLogin')
+            .eq('user_id', data.user.id)
+            .single();
+
+          if (profile.firstLogin) {
+            router.push('/change-password');
           } else {
-            notification.value = 'Erro ao fazer login. Tente novamente.';
+            router.push('/home');
           }
         } else {
-          router.push('/home');
+          notification.value = 'Erro ao fazer login. Usuário não encontrado.';
         }
       } catch (error) {
         console.error('Error logging in:', error.message);
