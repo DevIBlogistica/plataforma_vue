@@ -79,8 +79,8 @@
   <script>
   import { ref, onMounted } from 'vue';
   import supabase from '@/utils/supabase';
-  import Navbar from './Navbar.vue';
-  import Sidebar from './Sidebar.vue';
+  import Navbar from '@/components/Navbar.vue';
+  import Sidebar from '@/components/Sidebar.vue';
   
   export default {
     name: 'ControleAcesso',

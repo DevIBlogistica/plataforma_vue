@@ -1,31 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import LoginPage from '@/views/LoginPage.vue'; 
-import HomePage from '@/views/HomePage.vue'; 
-import ItemPage from '@/components/ItemPage.vue';
-import { categories } from "@/utils/categories";
-import ControleAcesso from '@/components/ControleAcesso.vue';
+import HomePage from '@/views/HomePage.vue';
+import ItemPage from '@/views/ItemPage.vue';
+import LoginPage from '@/views/LoginPage.vue';
+import ControleAcesso from '@/views/ControleAcesso.vue';
 import ChangePasswordPage from '@/views/ChangePasswordPage.vue';
-
-
-// Cria rotas dinamicamente com base na estrutura de categorias
-const dynamicRoutes = Object.entries(categories).flatMap(([category, items]) =>
-  items.map((item) => ({
-    path: `/${category}/${item}`,
-    name: `${category}-${item}`,
-    component: ItemPage,
-    props: { category, item },
-  }))
-);
 
 const routes = [
   {
     path: '/',
-    name: 'LoginPage', 
-    component: LoginPage,
-  },
-  {
-    path: '/login',
-    name: 'ReturnLoginPage', 
+    name: 'ReturnLoginPage',
     component: LoginPage,
   },
   {
@@ -39,8 +22,8 @@ const routes = [
     component: ControleAcesso,
   },
   {
-    path: "/:category/:item", // Rota dinâmica com categoria e item
-    name: "item",
+    path: '/item/:category/:item', // Rota dinâmica com categoria e item
+    name: 'Item',
     component: ItemPage,
     props: true, // Passa "category" e "item" como props para ItemPage
   },
@@ -49,7 +32,6 @@ const routes = [
     name: 'ChangePasswordPage',
     component: ChangePasswordPage,
   },
-  ...dynamicRoutes, // Adiciona as rotas dinâmicas
 ];
 
 const router = createRouter({
@@ -58,9 +40,3 @@ const router = createRouter({
 });
 
 export default router;
-
-/*xport default new VueRouter({
-  mode: 'history',
-  base: process.env.BASE_URL,
-  routes,
-});*/
