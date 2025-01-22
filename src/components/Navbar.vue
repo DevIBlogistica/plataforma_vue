@@ -28,6 +28,7 @@
 
 <script>
 import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 import { logout, getUserData } from "@/utils/supabase";
 
 export default {
@@ -35,10 +36,11 @@ export default {
     const userName = ref('Nome Vazio');
     const userCargo = ref('Cargo Vazio');
     const isAdmin = ref(false);
+    const router = useRouter();
 
     const handleLogout = async () => {
       await logout();
-      window.location.href = '/login';
+      router.push('/');
     };
 
     const fetchUserData = async () => {

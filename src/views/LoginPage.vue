@@ -47,17 +47,35 @@ export default {
           console.log('Login error:', error.message);
           notification.value = 'Erro ao fazer login. Tente novamente.';
         } else if (data.user) {
-          const { data: profile } = await supabase
+          // Verificar o campo firstLogin
+          const { data: profileData, error: profileError } = await supabase
             .from('profiles')
             .select('firstLogin')
             .eq('user_id', data.user.id)
             .single();
 
-          if (profile.firstLogin) {
-            router.push('/change-password');
-          } else {
-            router.push('/home');
+          if (profileError) {
+            notification.value = `Erro ao obter dados do perfil: ${profileError.message}`;
+            setTimeout(() => {
+              notification.value = "";
+            }, 3000);
+            return;
           }
+
+          if (profileData.firstLogin) {
+            notification.value = "Primeiro login detectado. Por favor, troque sua senha.";
+            setTimeout(() => {
+              notification.value = "";
+              router.push("/change-password"); // Redirecionar para a página de troca de senha
+            }, 3000);
+            return;
+          }
+
+          notification.value = "Login bem-sucedido!";
+          setTimeout(() => {
+            notification.value = "";
+            router.push("/home"); // Redirecionar para a página do dashboard após o login bem-sucedido
+          }, 1000);
         } else {
           notification.value = 'Erro ao fazer login. Usuário não encontrado.';
         }
