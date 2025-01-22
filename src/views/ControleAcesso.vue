@@ -140,7 +140,7 @@ export default {
         email: email.value,
         password: senha.value,
       });
-      console({ data, error });
+      console.log({ data, error });
 
       if (error) {
         notification.value = { message: `Erro ao criar usuário: ${error.message}`, type: 'error' };
@@ -169,7 +169,7 @@ export default {
       const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .insert([
-          { user_id: uid, nome: nome.value, cargo: cargo.value, adminProfile: adminProfile.value, firstLogin: true },
+          { user_id: uid, nome: nome.value, cargo: cargo.value, user_email: email.value, adminProfile: adminProfile.value, firstLogin: true },
         ]);
 
       if (profileError) {

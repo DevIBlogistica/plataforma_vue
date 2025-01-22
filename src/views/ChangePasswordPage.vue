@@ -83,14 +83,60 @@ export default {
 </script>
 
 <style scoped>
-/* Adicione estilos para as notificações, se necessário */
+.change-password-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f4f4f9;
+}
+
+.change-password-box {
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.change-password-button {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #15803d;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.change-password-button:hover {
+  background-color: #134e20;
+}
+
 .notification {
   margin-top: 10px;
+  font-size: 14px;
+  font-weight: bold;
 }
+
 .notification.error {
-  color: red;
+  color: #e63946; /* Vermelho para erros */
 }
+
 .notification.success {
-  color: green;
+  color: #15803d; /* Verde para sucesso */
 }
 </style>
