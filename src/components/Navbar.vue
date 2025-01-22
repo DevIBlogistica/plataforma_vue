@@ -69,10 +69,10 @@ export default {
   background-color: #ffffff; /* Cor de fundo branca */
 }
 .shadow-2 {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06); /* Sombra */
+  box-shadow: 0 1px 3px rgb(255, 255, 255), 0 1px 2px rgba(0, 0, 0, 0.06); /* Sombra */
 }
 .drop-shadow-1 {
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Sombra */
+  box-shadow: 0 1px 3px rgb(255, 255, 255); /* Sombra */
 }
 
 .navbar {

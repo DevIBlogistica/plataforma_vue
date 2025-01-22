@@ -1,5 +1,5 @@
 <template>
-  <aside class="absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-black duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 -translate-x-full">
+  <aside class="absolute left-0 top-0 z-9999 flex h-screen w-72.5 flex-col overflow-y-hidden bg-white duration-300 ease-linear dark:bg-boxdark lg:static lg:translate-x-0 -translate-x-full">
     <div class="flex items-center justify-between gap-2 px-6 py-5.5 lg:py-6.5">
       <router-link to="/home" class="">
         <img src="@/assets/logoib.png" alt="Logo" class="w-1/2 h-auto mx-auto">
@@ -27,14 +27,16 @@
                     <router-link
                       v-if="category === 'Controle de Acesso'"
                       :to="page.path"
-                      class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
+                      class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-primary"
+                      :class="{ 'text-primary': $route.path === page.path }"
                     >
                       {{ item }}
                     </router-link>
                     <router-link
                       v-else
                       :to="{ name: 'Item', params: { category, item } }"
-                      class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-white"
+                      class="group relative flex items-center gap-2.5 rounded-md px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:text-primary"
+                      :class="{ 'text-primary': $route.name === 'Item' && $route.params.category === category && $route.params.item === item }"
                     >
                       {{ item }}
                     </router-link>
@@ -73,7 +75,6 @@ export default {
 </script>
 
 <style scoped>
-
 /* Cor de fundo da sidebar */
 .sidebar {
   background-color: white;
@@ -85,9 +86,11 @@ export default {
   color: #15803d; /* Verde dos botões padrões */
 }
 
-/* Adicione estilos para hover, se necessário */
+/* Adicione estilos para hover e item selecionado */
 .sidebar .dropdown-item:hover,
-.sidebar .item:hover {
-  color: #134e20; /* Verde mais escuro */
+.sidebar .item:hover,
+.sidebar .dropdown-item.text-primary,
+.sidebar .item.text-primary {
+  color: #15803d; /* Verde dos botões padrões */
 }
 </style>

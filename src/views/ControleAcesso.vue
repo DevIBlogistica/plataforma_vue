@@ -80,7 +80,9 @@
           </div>
         </div>
       </div>
-      <Ticker />
+      <div class="ticker-wrapper">
+        <Ticker />
+      </div>
     </div>
   </div>
 </template>
@@ -241,6 +243,10 @@ export default {
 
 .table-container {
   margin-top: 20px;
+}
+
+.ticker-wrapper {
+  padding: 10px;
 }
 
 .notification {

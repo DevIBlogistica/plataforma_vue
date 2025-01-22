@@ -23,7 +23,6 @@
   
   <style scoped>
   .ticker-container {
-    width: 100%;
     overflow: hidden;
     background-color: white;
     border-radius: 5px;
