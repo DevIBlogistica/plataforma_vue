@@ -17,7 +17,7 @@
         />
         <button type="submit" class="login-button">Entrar</button>
         <!-- Campo para mensagens dinâmicas -->
-        <p v-if="notification" class="notification">{{ notification }}</p>
+        <p v-if="notification.message" :class="['notification', notification.type]">{{ notification.message }}</p>
       </form>
     </div>
   </div>
@@ -33,7 +33,7 @@ export default {
   setup() {
     const email = ref("");
     const password = ref("");
-    const notification = ref("");
+    const notification = ref({ message: "", type: "" });
     const router = useRouter();
 
     const handleSubmit = async () => {
@@ -45,7 +45,7 @@ export default {
 
         if (error) {
           console.log('Login error:', error.message);
-          notification.value = 'Erro ao fazer login. Tente novamente.';
+          notification.value = { message: 'Erro ao fazer login. Tente novamente.', type: 'error' };
         } else if (data.user) {
           // Verificar o campo firstLogin
           const { data: profileData, error: profileError } = await supabase
@@ -55,33 +55,33 @@ export default {
             .single();
 
           if (profileError) {
-            notification.value = `Erro ao obter dados do perfil: ${profileError.message}`;
+            notification.value = { message: `Erro ao obter dados do perfil: ${profileError.message}`, type: 'error' };
             setTimeout(() => {
-              notification.value = "";
+              notification.value = { message: "", type: "" };
             }, 3000);
             return;
           }
 
           if (profileData.firstLogin) {
-            notification.value = "Primeiro login detectado. Por favor, troque sua senha.";
+            notification.value = { message: "Primeiro login detectado. Por favor, troque sua senha.", type: 'success' };
             setTimeout(() => {
-              notification.value = "";
+              notification.value = { message: "", type: "" };
               router.push("/change-password"); // Redirecionar para a página de troca de senha
             }, 3000);
             return;
           }
 
-          notification.value = "Login bem-sucedido!";
+          notification.value = { message: "Login bem-sucedido!", type: 'success' };
           setTimeout(() => {
-            notification.value = "";
+            notification.value = { message: "", type: "" };
             router.push("/home"); // Redirecionar para a página do dashboard após o login bem-sucedido
           }, 1000);
         } else {
-          notification.value = 'Erro ao fazer login. Usuário não encontrado.';
+          notification.value = { message: 'Erro ao fazer login. Usuário não encontrado.', type: 'error' };
         }
       } catch (error) {
         console.error('Error logging in:', error.message);
-        notification.value = 'Erro ao fazer login. Tente novamente.';
+        notification.value = { message: 'Erro ao fazer login. Tente novamente.', type: 'error' };
       }
     };
 
@@ -154,8 +154,15 @@ export default {
 /* Notificação */
 .notification {
   margin-top: 10px;
-  color: #e63946; /* Vermelho para erros */
   font-size: 14px;
   font-weight: bold;
+}
+
+.notification.error {
+  color: #e63946; /* Vermelho para erros */
+}
+
+.notification.success {
+  color: #15803d; /* Verde para sucesso */
 }
 </style>

@@ -1,9 +1,9 @@
 <template>
-  <div>
-    <Navbar />
-    <div class="layout">
-      <Sidebar />
-      <div class="main-content">
+  <div class="layout">
+    <Sidebar />
+    <div class="main-content">
+      <Navbar />
+      <div class="content-container">
         <div class="form-container">
           <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
             <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
@@ -47,33 +47,40 @@
                   </div>
                 </div>
                 <button type="submit" class="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">Cadastrar</button>
-                <p v-if="notification" class="notification">{{ notification }}</p>
+                <p v-if="notification.message" :class="['notification', notification.type]">{{ notification.message }}</p>
               </div>
             </form>
           </div>
         </div>
         <div class="table-wrapper">
-          <div class="table-container">
-            <h3 class="font-medium text-black dark:text-white">Usuários Cadastrados</h3>
-            <table class="min-w-full divide-y divide-gray-200">
-              <thead>
-                <tr>
-                  <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
-                  <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cargo</th>
-                  <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admin</th>
-                </tr>
-              </thead>
-              <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="user in users" :key="user.id">
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.nome }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.cargo }}</td>
-                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.adminProfile ? 'Sim' : 'Não' }}</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <h3 class="font-medium text-black dark:text-white text-center">Usuários cadastrados</h3>
+            </div>
+            <div class="p-1">
+              <div class="table-container">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead>
+                    <tr>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cargo</th>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admin</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="user in users" :key="user.id">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.nome }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.cargo }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.adminProfile ? 'Sim' : 'Não' }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      <Ticker />
     </div>
   </div>
 </template>
@@ -83,12 +90,14 @@ import { ref, onMounted } from 'vue';
 import supabase from '@/utils/supabase';
 import Navbar from '@/components/Navbar.vue';
 import Sidebar from '@/components/Sidebar.vue';
+import Ticker from '@/components/Ticker.vue';
 
 export default {
   name: 'ControleAcesso',
   components: {
     Navbar,
     Sidebar,
+    Ticker,
   },
   setup() {
     const nome = ref('');
@@ -96,7 +105,7 @@ export default {
     const email = ref('');
     const senha = ref('');
     const adminProfile = ref(false);
-    const notification = ref('');
+    const notification = ref({ message: "", type: "" });
     const users = ref([]);
 
     const validateEmail = (email) => {
@@ -118,9 +127,9 @@ export default {
 
     const handleSubmit = async () => {
       if (!validateEmail(email.value)) {
-        notification.value = 'Email inválido.';
+        notification.value = { message: 'Email inválido.', type: 'error' };
         setTimeout(() => {
-          notification.value = '';
+          notification.value = { message: "", type: "" };
         }, 3000);
         return;
       }
@@ -129,12 +138,12 @@ export default {
         email: email.value,
         password: senha.value,
       });
-      console.log({ data, error });
+      console({ data, error });
 
       if (error) {
-        notification.value = `Erro ao criar usuário: ${error.message}`;
+        notification.value = { message: `Erro ao criar usuário: ${error.message}`, type: 'error' };
         setTimeout(() => {
-          notification.value = '';
+          notification.value = { message: "", type: "" };
         }, 3000);
         return;
       }
@@ -144,9 +153,9 @@ export default {
       while (!user) {
         const { data: userData, error: userError } = await supabase.auth.getUser();
         if (userError) {
-          notification.value = `Erro ao obter usuário: ${userError.message}`;
+          notification.value = { message: `Erro ao obter usuário: ${userError.message}`, type: 'error' };
           setTimeout(() => {
-            notification.value = '';
+            notification.value = { message: "", type: "" };
           }, 3000);
           return;
         }
@@ -162,16 +171,16 @@ export default {
         ]);
 
       if (profileError) {
-        notification.value = `Erro ao adicionar usuário na tabela profiles: ${profileError.message}`;
+        notification.value = { message: `Erro ao adicionar usuário na tabela profiles: ${profileError.message}`, type: 'error' };
         setTimeout(() => {
-          notification.value = '';
+          notification.value = { message: "", type: "" };
         }, 3000);
         return;
       }
 
-      notification.value = 'Usuário criado com sucesso!';
+      notification.value = { message: 'Usuário criado com sucesso!', type: 'success' };
       setTimeout(() => {
-        notification.value = '';
+        notification.value = { message: "", type: "" };
       }, 3000);
 
       // Limpar os campos do formulário após a criação do usuário
@@ -204,12 +213,18 @@ export default {
 <style scoped>
 .layout {
   display: flex;
+  height: 100vh;
 }
 
 .main-content {
   flex: 1;
-  padding: 20px;
-  min-height: 100vh; /* Garante que o conteúdo ocupe pelo menos a altura da tela */
+  display: flex;
+  flex-direction: column;
+}
+
+.content-container {
+  flex: 1;
+  padding: 10px;
   display: flex;
   justify-content: space-between;
 }
@@ -230,8 +245,15 @@ export default {
 
 .notification {
   margin-top: 10px;
-  color: #e63946; /* Vermelho para erros */
   font-size: 14px;
   font-weight: bold;
+}
+
+.notification.error {
+  color: #e63946; /* Vermelho para erros */
+}
+
+.notification.success {
+  color: #15803d; /* Verde para sucesso */
 }
 </style>

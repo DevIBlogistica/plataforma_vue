@@ -25,7 +25,7 @@
   .ticker-container {
     width: 100%;
     overflow: hidden;
-    background-color: #f4f4f9;
+    background-color: white;
     border-radius: 5px;
     padding: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);

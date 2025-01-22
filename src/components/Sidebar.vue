@@ -73,5 +73,21 @@ export default {
 </script>
 
 <style scoped>
-/* Estilo original da Sidebar */
+
+/* Cor de fundo da sidebar */
+.sidebar {
+  background-color: white;
+}
+
+/* Cor dos textos dos dropdowns e itens */
+.sidebar .dropdown-item,
+.sidebar .item {
+  color: #15803d; /* Verde dos botões padrões */
+}
+
+/* Adicione estilos para hover, se necessário */
+.sidebar .dropdown-item:hover,
+.sidebar .item:hover {
+  color: #134e20; /* Verde mais escuro */
+}
 </style>
