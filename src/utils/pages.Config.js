@@ -157,6 +157,7 @@ export const pagesConfig = {
     },
   },
   // Controle de Acesso Category
+  /*
   'Controle de Acesso': {
    // Controle de Acesso Item
    Cadastros: {
@@ -168,4 +169,5 @@ export const pagesConfig = {
     path: '/controle-de-acesso',
   },
   }
+  */
 };

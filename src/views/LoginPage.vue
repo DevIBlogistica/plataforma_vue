@@ -37,53 +37,66 @@ export default {
     const router = useRouter();
 
     const handleSubmit = async () => {
-      try {
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: email.value,
-          password: password.value,
-        });
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.value,
+      password: password.value,
+    });
 
-        if (error) {
-          console.log('Login error:', error.message);
-          notification.value = { message: 'Erro ao fazer login. Tente novamente.', type: 'error' };
-        } else if (data.user) {
-          // Verificar o campo firstLogin
-          const { data: profileData, error: profileError } = await supabase
-            .from('profiles')
-            .select('firstLogin')
-            .eq('user_id', data.user.id)
-            .single();
+    if (error) {
+      console.log('Login error:', error.message);
+      notification.value = { message: 'Erro ao fazer login. Tente novamente.', type: 'error' };
+    } else if (data.user) {
+      // Atualizar último acesso no perfil
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ ultimo_acesso: new Date() })
+        .eq('user_id', data.user.id);
 
-          if (profileError) {
-            notification.value = { message: `Erro ao obter dados do perfil: ${profileError.message}`, type: 'error' };
-            setTimeout(() => {
-              notification.value = { message: "", type: "" };
-            }, 3000);
-            return;
-          }
-
-          if (profileData.firstLogin) {
-            notification.value = { message: "Primeiro login detectado. Por favor, troque sua senha.", type: 'success' };
-            setTimeout(() => {
-              notification.value = { message: "", type: "" };
-              router.push("/change-password"); // Redirecionar para a página de troca de senha
-            }, 3000);
-            return;
-          }
-
-          notification.value = { message: "Login bem-sucedido!", type: 'success' };
-          setTimeout(() => {
-            notification.value = { message: "", type: "" };
-            router.push("/home"); // Redirecionar para a página do dashboard após o login bem-sucedido
-          }, 1000);
-        } else {
-          notification.value = { message: 'Erro ao fazer login. Usuário não encontrado.', type: 'error' };
-        }
-      } catch (error) {
-        console.error('Error logging in:', error.message);
-        notification.value = { message: 'Erro ao fazer login. Tente novamente.', type: 'error' };
+      if (updateError) {
+        console.error('Erro ao atualizar último acesso:', updateError.message);
+        notification.value = { message: 'Erro ao atualizar último acesso.', type: 'error' };
+        return;
       }
-    };
+
+      // Verificar o campo firstLogin
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('firstLogin')
+        .eq('user_id', data.user.id)
+        .single();
+
+      if (profileError) {
+        notification.value = { message: `Erro ao obter dados do perfil: ${profileError.message}`, type: 'error' };
+        setTimeout(() => {
+          notification.value = { message: "", type: "" };
+        }, 3000);
+        return;
+      }
+
+      if (profileData.firstLogin) {
+        notification.value = { message: "Primeiro login detectado. Por favor, troque sua senha.", type: 'success' };
+        setTimeout(() => {
+          notification.value = { message: "", type: "" };
+          router.push("/change-password"); // Redirecionar para a página de troca de senha
+        }, 3000);
+        return;
+      }
+
+      notification.value = { message: "Login bem-sucedido!", type: 'success' };
+      setTimeout(() => {
+        notification.value = { message: "", type: "" };
+        router.push("/home"); // Redirecionar para a página do dashboard após o login bem-sucedido
+      }, 1000);
+    } else {
+      notification.value = { message: 'Erro ao fazer login. Usuário não encontrado.', type: 'error' };
+    }
+  } catch (error) {
+    console.error('Error logging in:', error.message);
+    notification.value = { message: 'Erro ao fazer login. Tente novamente.', type: 'error' };
+  }
+};
+
 
     return {
       email,
