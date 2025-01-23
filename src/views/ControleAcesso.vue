@@ -59,18 +59,23 @@
             </div>
             <div class="p-1">
               <div class="table-container">
-                <table class="min-w-full divide-y divide-gray-200">
+             <table class="min-w-full divide-y divide-gray-200">
                   <thead>
                     <tr>
-                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
+                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome
+                        <select v-model="sortOrder" @change="sortUsers" id="sortOrder" class="border rounded px-2 py-1 ml-2">
+                          <option value="asc">A-Z</option>
+                          <option value="desc">Z-A</option>
+                        </select>
+                        </th>
                       <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cargo</th>
                       <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admin</th>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Administrador</th>
                       <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Último Acesso</th>
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="user in users" :key="user.id">
+                    <tr v-for="user in sortedUsers" :key="user.id">
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.nome }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.cargo }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.email }}</td>
@@ -92,7 +97,7 @@
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import supabase from '@/utils/supabase';
 import Navbar from '@/components/Navbar.vue';
 import Sidebar from '@/components/Sidebar.vue';
@@ -113,6 +118,7 @@ export default {
     const adminProfile = ref(false);
     const notification = ref({ message: "", type: "" });
     const users = ref([]);
+    const sortOrder = ref('asc');
 
     const validateEmail = (email) => {
       const re = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
@@ -214,6 +220,26 @@ export default {
       fetchUsers();
     };
 
+    const sortUsers = () => {
+      users.value.sort((a, b) => {
+        if (sortOrder.value === 'asc') {
+          return a.nome.localeCompare(b.nome);
+        } else {
+          return b.nome.localeCompare(a.nome);
+        }
+      });
+    };
+
+    const sortedUsers = computed(() => {
+      return [...users.value].sort((a, b) => {
+        if (sortOrder.value === 'asc') {
+          return a.nome.localeCompare(b.nome);
+        } else {
+          return b.nome.localeCompare(a.nome);
+        }
+      });
+    });
+
     onMounted(fetchUsers);
 
     return {
@@ -224,8 +250,11 @@ export default {
       adminProfile,
       notification,
       users,
+      sortOrder,
       handleSubmit,
       formatDate,
+      sortUsers,
+      sortedUsers,
     };
   },
 };
