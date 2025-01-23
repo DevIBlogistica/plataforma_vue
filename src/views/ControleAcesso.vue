@@ -64,14 +64,18 @@
                     <tr>
                       <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
                       <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cargo</th>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
                       <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Admin</th>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Último Acesso</th>
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-for="user in users" :key="user.id">
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.nome }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.cargo }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.email }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.adminProfile ? 'Sim' : 'Não' }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.ultimo_acesso ? formatDate(user.ultimo_acesso) : 'Não acessado' }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -111,19 +115,36 @@ export default {
     const users = ref([]);
 
     const validateEmail = (email) => {
-      // Ajuste a regex para permitir subdomínios
       const re = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
       return re.test(String(email).toLowerCase());
+    };
+
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
+      const hours = String(date.getHours()).padStart(2, '0');
+      const minutes = String(date.getMinutes()).padStart(2, '0');
+      const seconds = String(date.getSeconds()).padStart(2, '0');
+      return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
     };
 
     const fetchUsers = async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, nome, cargo, adminProfile');
+        .select('id, nome, cargo, adminProfile, user_email, ultimo_acesso');
       if (error) {
         console.error('Erro ao buscar usuários:', error.message);
       } else {
-        users.value = data;
+        users.value = data.map(user => {
+          const adjustedAccessTime = user.ultimo_acesso ? new Date(new Date(user.ultimo_acesso).getTime() - 3 * 60 * 60 * 1000) : null;
+          return {
+            ...user,
+            email: user.user_email,
+            ultimo_acesso: adjustedAccessTime ? adjustedAccessTime.toISOString().slice(0, 19).replace('T', ' ') : null
+          };
+        });
       }
     };
 
@@ -150,7 +171,6 @@ export default {
         return;
       }
 
-      // Esperar até que o usuário seja confirmado
       let user = null;
       while (!user) {
         const { data: userData, error: userError } = await supabase.auth.getUser();
@@ -185,14 +205,12 @@ export default {
         notification.value = { message: "", type: "" };
       }, 3000);
 
-      // Limpar os campos do formulário após a criação do usuário
       nome.value = '';
       cargo.value = '';
       email.value = '';
       senha.value = '';
       adminProfile.value = false;
 
-      // Atualizar a lista de usuários
       fetchUsers();
     };
 
@@ -207,6 +225,7 @@ export default {
       notification,
       users,
       handleSubmit,
+      formatDate,
     };
   },
 };
@@ -256,10 +275,10 @@ export default {
 }
 
 .notification.error {
-  color: #e63946; /* Vermelho para erros */
+  color: #e63946;
 }
 
 .notification.success {
-  color: #15803d; /* Verde para sucesso */
+  color: #15803d;
 }
 </style>
