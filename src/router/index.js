@@ -4,6 +4,7 @@ import ItemPage from '@/views/ItemPage.vue';
 import LoginPage from '@/views/LoginPage.vue';
 import ControleAcesso from '@/views/ControleAcesso.vue';
 import ChangePasswordPage from '@/views/ChangePasswordPage.vue';
+import TestPage from '@/views/TestPage.vue'; 
 
 const routes = [
   {
@@ -15,6 +16,11 @@ const routes = [
     path: '/home',
     name: 'HomePage',
     component: HomePage,
+  },
+  {
+    path: '/test',
+    name: 'TestPage',
+    component: TestPage,
   },
   {
     path: '/controle-de-acesso',
@@ -32,6 +38,7 @@ const routes = [
     name: 'ChangePasswordPage',
     component: ChangePasswordPage,
   },
+  
 ];
 
 const router = createRouter({

@@ -54,28 +54,44 @@
         </div>
         <div class="table-wrapper">
           <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-            <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-              <h3 class="font-medium text-black dark:text-white text-center">Usuários cadastrados</h3>
+            <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark flex items-center justify-between">
+              <h3 class="font-medium text-black dark:text-white text-center flex-grow">Usuários cadastrados</h3>
+              <input 
+                v-model="searchQuery" 
+                placeholder="Pesquisar usuários..." 
+                class="border rounded px-2 py-1 w-64 text-sm"
+              />
             </div>
             <div class="p-1">
               <div class="table-container">
-             <table class="min-w-full divide-y divide-gray-200">
+                <table class="min-w-full divide-y divide-gray-200">
                   <thead>
                     <tr>
-                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome
                         <select v-model="sortOrder" @change="sortUsers" id="sortOrder" class="border rounded px-2 py-1 ml-2">
                           <option value="asc">A-Z</option>
                           <option value="desc">Z-A</option>
                         </select>
-                        </th>
+                      </th>
                       <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cargo</th>
                       <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Administrador</th>
-                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Último Acesso</th>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Administrador
+                        <select v-model="adminFilter" class="border rounded px-2 py-1 ml-2">
+                          <option value="all">Todos</option>
+                          <option value="admin">Sim</option>
+                          <option value="standard">Não</option>
+                        </select>
+                      </th>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Último Acesso
+                        <select v-model="lastAccessSort" class="border rounded px-2 py-1 ml-2">
+                          <option value="recent">Mais recente</option>
+                          <option value="oldest">Mais antigo</option>
+                        </select>
+                      </th>
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="user in sortedUsers" :key="user.id">
+                    <tr v-for="user in filteredAndSortedUsers" :key="user.id">
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.nome }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.cargo }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.email }}</td>
@@ -119,6 +135,9 @@ export default {
     const notification = ref({ message: "", type: "" });
     const users = ref([]);
     const sortOrder = ref('asc');
+    const adminFilter = ref('all');
+    const lastAccessSort = ref('recent');
+    const searchQuery = ref('');
 
     const validateEmail = (email) => {
       const re = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
@@ -154,6 +173,50 @@ export default {
       }
     };
 
+    const filteredAndSortedUsers = computed(() => {
+      let result = [...users.value];
+      
+      // Filtro de pesquisa
+      if (searchQuery.value) {
+        const query = searchQuery.value.toLowerCase();
+        result = result.filter(user => 
+          user.nome.toLowerCase().includes(query) ||
+          user.cargo.toLowerCase().includes(query) ||
+          user.email.toLowerCase().includes(query) ||
+          (user.adminProfile ? 'sim' : 'não').includes(query) ||
+          (user.ultimo_acesso ? formatDate(user.ultimo_acesso) : 'não acessado').toLowerCase().includes(query)
+        );
+      }
+      
+      // Filtro de administrador
+      if (adminFilter.value === 'admin') {
+        result = result.filter(user => user.adminProfile);
+      } else if (adminFilter.value === 'standard') {
+        result = result.filter(user => !user.adminProfile);
+      }
+      
+      // Ordenação por nome
+      result.sort((a, b) => {
+        if (sortOrder.value === 'asc') {
+          return a.nome.localeCompare(b.nome);
+        } else {
+          return b.nome.localeCompare(a.nome);
+        }
+      });
+
+      // Ordenação por último acesso
+      result.sort((a, b) => {
+        if (!a.ultimo_acesso) return lastAccessSort.value === 'recent' ? 1 : -1;
+        if (!b.ultimo_acesso) return lastAccessSort.value === 'recent' ? -1 : 1;
+        
+        return lastAccessSort.value === 'recent' 
+          ? new Date(b.ultimo_acesso) - new Date(a.ultimo_acesso)
+          : new Date(a.ultimo_acesso) - new Date(b.ultimo_acesso);
+      });
+      
+      return result;
+    });
+
     const handleSubmit = async () => {
       if (!validateEmail(email.value)) {
         notification.value = { message: 'Email inválido.', type: 'error' };
@@ -167,7 +230,6 @@ export default {
         email: email.value,
         password: senha.value,
       });
-      console.log({ data, error });
 
       if (error) {
         notification.value = { message: `Erro ao criar usuário: ${error.message}`, type: 'error' };
@@ -220,26 +282,6 @@ export default {
       fetchUsers();
     };
 
-    const sortUsers = () => {
-      users.value.sort((a, b) => {
-        if (sortOrder.value === 'asc') {
-          return a.nome.localeCompare(b.nome);
-        } else {
-          return b.nome.localeCompare(a.nome);
-        }
-      });
-    };
-
-    const sortedUsers = computed(() => {
-      return [...users.value].sort((a, b) => {
-        if (sortOrder.value === 'asc') {
-          return a.nome.localeCompare(b.nome);
-        } else {
-          return b.nome.localeCompare(a.nome);
-        }
-      });
-    });
-
     onMounted(fetchUsers);
 
     return {
@@ -251,10 +293,12 @@ export default {
       notification,
       users,
       sortOrder,
+      adminFilter,
+      lastAccessSort,
+      searchQuery,
       handleSubmit,
       formatDate,
-      sortUsers,
-      sortedUsers,
+      filteredAndSortedUsers,
     };
   },
 };
@@ -286,7 +330,7 @@ export default {
 
 .table-wrapper {
   width: 70%;
-  margin-left: 20px;
+  margin-left: 10px;
 }
 
 .table-container {
