@@ -353,13 +353,12 @@ export default {
     };
 
     const cancelEdit = () => {
-      editingUserId.value = null;
-      nome.value = '';
-      cargo.value = '';
-      email.value = '';
-      senha.value = '';
-      adminProfile.value = false;
-    };
+  editingUserId.value = null;
+  nome.value = '';
+  cargo.value = '';
+  email.value = '';
+  adminProfile.value = false;
+};
 
     const deleteUser = async (user) => {
       const confirmDelete = confirm(`Tem certeza que deseja excluir o usuário ${user.nome}?`);
