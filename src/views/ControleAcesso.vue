@@ -20,9 +20,6 @@
                 <div class="mb-5">
                   <input v-model="email" type="email" placeholder="Email" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
                 </div>
-                <div class="mb-5">
-                  <input v-model="senha" type="password" placeholder="Senha" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
-                </div>
                 <div class="mb-5.5">
                   <label for="adminProfile" class="mb-4.5 block text-sm font-medium text-black dark:text-white text-center">Permissão de usuário</label>
                   <div class="flex gap-2.5 justify-center">
@@ -46,7 +43,12 @@
                     </div>
                   </div>
                 </div>
-                <button type="submit" class="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">Cadastrar</button>
+                <button type="submit" class="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
+                  {{ editingUserId ? 'Atualizar' : 'Cadastrar' }}
+                </button>
+                <button v-if="editingUserId" @click="cancelEdit" type="button" class="flex w-full justify-center rounded bg-secondary p-3 font-medium text-gray hover:bg-opacity-90 mt-2 cancel-button">
+  Cancelar
+</button>
                 <p v-if="notification.message" :class="['notification', notification.type]">{{ notification.message }}</p>
               </div>
             </form>
@@ -157,7 +159,6 @@ export default {
     const nome = ref('');
     const cargo = ref('');
     const email = ref('');
-    const senha = ref('');
     const adminProfile = ref(false);
     const notification = ref({ message: "", type: "" });
     const users = ref([]);
@@ -165,6 +166,7 @@ export default {
     const adminFilter = ref('all');
     const lastAccessSort = ref('recent');
     const searchQuery = ref('');
+    const editingUserId = ref(null);
 
     const validateEmail = (email) => {
       const re = /^[^\s@]+@[^\s@]+\.[a-z]{2,}$/i;
@@ -234,18 +236,18 @@ export default {
 
       // Ordenação por último acesso
       result.sort((a, b) => {
-    if (!a.ultimo_acesso) return lastAccessSort.value === 'recent' ? 1 : -1;
-    if (!b.ultimo_acesso) return lastAccessSort.value === 'recent' ? -1 : 1;
-    
-    return lastAccessSort.value === 'recent' 
-      ? new Date(b.ultimo_acesso) - new Date(a.ultimo_acesso)
-      : new Date(a.ultimo_acesso) - new Date(b.ultimo_acesso);
-  });
-  
-  return result;
-});
+        if (!a.ultimo_acesso) return lastAccessSort.value === 'recent' ? 1 : -1;
+        if (!b.ultimo_acesso) return lastAccessSort.value === 'recent' ? -1 : 1;
+        
+        return lastAccessSort.value === 'recent' 
+          ? new Date(b.ultimo_acesso) - new Date(a.ultimo_acesso)
+          : new Date(a.ultimo_acesso) - new Date(b.ultimo_acesso);
+      });
+      
+      return result;
+    });
 
-const handleSubmit = async () => {
+    const handleSubmit = async () => {
   if (!validateEmail(email.value)) {
     notification.value = { message: 'Email inválido.', type: 'error' };
     setTimeout(() => {
@@ -254,49 +256,75 @@ const handleSubmit = async () => {
     return;
   }
 
-  const { data, error } = await supabase.auth.signUp({
-    email: email.value,
-    password: senha.value,
-  });
+  if (editingUserId.value) {
+    // Atualizar usuário existente
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        nome: nome.value,
+        cargo: cargo.value,
+        user_email: email.value,
+        adminProfile: adminProfile.value,
+      })
+      .eq('id', editingUserId.value);
 
-  if (error) {
-    notification.value = { message: `Erro ao criar usuário: ${error.message}`, type: 'error' };
-    setTimeout(() => {
-      notification.value = { message: "", type: "" };
-    }, 3000);
-    return;
-  }
-
-  let user = null;
-  while (!user) {
-    const { data: userData, error: userError } = await supabase.auth.getUser();
-    if (userError) {
-      notification.value = { message: `Erro ao obter usuário: ${userError.message}`, type: 'error' };
+    if (error) {
+      notification.value = { message: `Erro ao atualizar usuário: ${error.message}`, type: 'error' };
       setTimeout(() => {
         notification.value = { message: "", type: "" };
       }, 3000);
       return;
     }
-    user = userData.user;
+
+    notification.value = { message: 'Usuário atualizado com sucesso!', type: 'success' };
+    editingUserId.value = null; // Limpar o estado de edição
+  } else {
+    // Criar novo usuário
+    const { data, error } = await supabase.auth.signUp({
+      email: email.value,
+      password: 'defaultPassword', // Use uma senha padrão ou gere uma senha temporária
+    });
+
+    if (error) {
+      notification.value = { message: `Erro ao criar usuário: ${error.message}`, type: 'error' };
+      setTimeout(() => {
+        notification.value = { message: "", type: "" };
+      }, 3000);
+      return;
+    }
+
+    let user = null;
+    while (!user) {
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (userError) {
+        notification.value = { message: `Erro ao obter usuário: ${userError.message}`, type: 'error' };
+        setTimeout(() => {
+          notification.value = { message: "", type: "" };
+        }, 3000);
+        return;
+      }
+      user = userData.user;
+    }
+
+    const uid = user.id;
+
+    const { data: profileData, error: profileError } = await supabase
+      .from('profiles')
+      .insert([
+        { user_id: uid, nome: nome.value, cargo: cargo.value, user_email: email.value, adminProfile: adminProfile.value, firstLogin: true },
+      ]);
+
+    if (profileError) {
+      notification.value = { message: `Erro ao adicionar usuário na tabela profiles: ${profileError.message}`, type: 'error' };
+      setTimeout(() => {
+        notification.value = { message: "", type: "" };
+      }, 3000);
+      return;
+    }
+
+    notification.value = { message: 'Usuário criado com sucesso!', type: 'success' };
   }
 
-  const uid = user.id;
-
-  const { data: profileData, error: profileError } = await supabase
-    .from('profiles')
-    .insert([
-      { user_id: uid, nome: nome.value, cargo: cargo.value, user_email: email.value, adminProfile: adminProfile.value, firstLogin: true },
-    ]);
-
-  if (profileError) {
-    notification.value = { message: `Erro ao adicionar usuário na tabela profiles: ${profileError.message}`, type: 'error' };
-    setTimeout(() => {
-      notification.value = { message: "", type: "" };
-    }, 3000);
-    return;
-  }
-
-  notification.value = { message: 'Usuário criado com sucesso!', type: 'success' };
   setTimeout(() => {
     notification.value = { message: "", type: "" };
   }, 3000);
@@ -304,70 +332,80 @@ const handleSubmit = async () => {
   nome.value = '';
   cargo.value = '';
   email.value = '';
-  senha.value = '';
   adminProfile.value = false;
 
   fetchUsers();
 };
 
-const toggleActionMenu = (user) => {
-  users.value.forEach(u => {
-    if (u.id !== user.id) u.showActions = false;
-  });
-  user.showActions = !user.showActions;
-};
+    const toggleActionMenu = (user) => {
+      users.value.forEach(u => {
+        if (u.id !== user.id) u.showActions = false;
+      });
+      user.showActions = !user.showActions;
+    };
 
-const editUser = (user) => {
-  console.log('Editando usuário:', user);
-  // Lógica de edição
-};
+    const editUser = (user) => {
+      nome.value = user.nome;
+      cargo.value = user.cargo;
+      email.value = user.email;
+      adminProfile.value = user.adminProfile;
+      editingUserId.value = user.id; // Adicionar um estado para rastrear o usuário em edição
+    };
 
-const deleteUser = async (user) => {
-  const confirmDelete = confirm(`Tem certeza que deseja excluir o usuário ${user.nome}?`);
-  
-  if (confirmDelete) {
-    try {
-      // Primeiro, exclui da tabela de autenticação usando a função de serviço de admin
-      const { error: authError } = await supabase.auth.admin.deleteUser(user.user_id);
+    const cancelEdit = () => {
+      editingUserId.value = null;
+      nome.value = '';
+      cargo.value = '';
+      email.value = '';
+      senha.value = '';
+      adminProfile.value = false;
+    };
+
+    const deleteUser = async (user) => {
+      const confirmDelete = confirm(`Tem certeza que deseja excluir o usuário ${user.nome}?`);
       
-      if (authError) throw authError;
+      if (confirmDelete) {
+        try {
+          // Primeiro, exclui da tabela de autenticação usando a função de serviço de admin
+          const { error: authError } = await supabase.auth.admin.deleteUser(user.user_id);
+          
+          if (authError) throw authError;
 
-      // Depois, exclui da tabela de perfis
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .delete()
-        .eq('user_id', user.user_id);
-      
-      if (profileError) throw profileError;
+          // Depois, exclui da tabela de perfis
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .delete()
+            .eq('user_id', user.user_id);
+          
+          if (profileError) throw profileError;
 
-      // Atualiza lista de usuários
-      await fetchUsers();
+          // Atualiza lista de usuários
+          await fetchUsers();
 
-      notification.value = { 
-        message: 'Usuário excluído com sucesso!', 
-        type: 'success' 
-      };
-    } catch (error) {
-      notification.value = { 
-        message: `Erro ao excluir usuário: ${error.message}`, 
-        type: 'error' 
-      };
-    }
+          notification.value = { 
+            message: 'Usuário excluído com sucesso!', 
+            type: 'success' 
+          };
+        } catch (error) {
+          notification.value = { 
+            message: `Erro ao excluir usuário: ${error.message}`, 
+            type: 'error' 
+          };
+        }
 
-    // Limpa notificação após 3 segundos
-    setTimeout(() => {
-      notification.value = { message: "", type: "" };
-    }, 3000);
-  }
-};
+        // Limpa notificação após 3 segundos
+        setTimeout(() => {
+          notification.value = { message: "", type: "" };
+        }, 3000);
+      }
+    };
 
-onMounted(fetchUsers);
+    onMounted(fetchUsers);
 
-return {
+    return {
   nome,
   cargo,
   email,
-  senha,
   adminProfile,
   notification,
   users,
@@ -380,9 +418,11 @@ return {
   filteredAndSortedUsers,
   toggleActionMenu,
   editUser,
-  deleteUser
+  cancelEdit,
+  deleteUser,
+  editingUserId
 };
-},
+  },
 };
 </script>
 
@@ -435,5 +475,14 @@ return {
 
 .notification.success {
   color: #15803d;
+}
+
+.cancel-button {
+  background-color: rgb(239, 127, 26);
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: rgba(239, 127, 26, 0.9);
 }
 </style>
