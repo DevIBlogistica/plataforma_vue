@@ -88,6 +88,7 @@
                           <option value="oldest">Mais antigo</option>
                         </select>
                       </th>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                     </tr>
                   </thead>
                   <tbody class="bg-white divide-y divide-gray-200">
@@ -97,6 +98,32 @@
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.email }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.adminProfile ? 'Sim' : 'Não' }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.ultimo_acesso ? formatDate(user.ultimo_acesso) : 'Não acessado' }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
+                        <div class="relative">
+                          <button 
+                            @click="toggleActionMenu(user)" 
+                            class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-black shadow-11 hover:text-primary dark:bg-meta-4 dark:text-white dark:shadow-none">
+                            Ações 
+                            <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M8.00039 11.4C7.85039 11.4 7.72539 11.35 7.60039 11.25L1.85039 5.60005C1.62539 5.37505 1.62539 5.02505 1.85039 4.80005C2.07539 4.57505 2.42539 4.57505 2.65039 4.80005L8.00039 10.025L13.3504 4.75005C13.5754 4.52505 13.9254 4.52505 14.1504 4.75005C14.3754 4.97505 14.3754 5.32505 14.1504 5.55005L8.40039 11.2C8.27539 11.325 8.15039 11.4 8.00039 11.4Z" fill=""></path>
+                            </svg>
+                          </button>
+                          <div 
+                            v-if="user.showActions" 
+                            class="absolute right-0 z-10 w-full max-w-39.5 rounded-[5px] bg-white py-2.5 shadow-12 dark:bg-boxdark top-full mt-1">
+                            <button 
+                              @click="editUser(user)" 
+                              class="flex w-full px-4 py-2 text-sm hover:bg-whiter hover:text-primary dark:hover:bg-meta-4">
+                              Editar
+                            </button>
+                            <button 
+                              @click="deleteUser(user)" 
+                              class="flex w-full px-4 py-2 text-sm hover:bg-whiter hover:text-primary dark:hover:bg-meta-4">
+                              Excluir
+                            </button>
+                          </div>
+                        </div>
+                      </td>
                     </tr>
                   </tbody>
                 </table>
@@ -158,7 +185,7 @@ export default {
     const fetchUsers = async () => {
       const { data, error } = await supabase
         .from('profiles')
-        .select('id, nome, cargo, adminProfile, user_email, ultimo_acesso');
+        .select('id, nome, cargo, adminProfile, user_email, ultimo_acesso, user_id');
       if (error) {
         console.error('Erro ao buscar usuários:', error.message);
       } else {
@@ -167,7 +194,8 @@ export default {
           return {
             ...user,
             email: user.user_email,
-            ultimo_acesso: adjustedAccessTime ? adjustedAccessTime.toISOString().slice(0, 19).replace('T', ' ') : null
+            ultimo_acesso: adjustedAccessTime ? adjustedAccessTime.toISOString().slice(0, 19).replace('T', ' ') : null,
+            showActions: false
           };
         });
       }
@@ -206,101 +234,155 @@ export default {
 
       // Ordenação por último acesso
       result.sort((a, b) => {
-        if (!a.ultimo_acesso) return lastAccessSort.value === 'recent' ? 1 : -1;
-        if (!b.ultimo_acesso) return lastAccessSort.value === 'recent' ? -1 : 1;
-        
-        return lastAccessSort.value === 'recent' 
-          ? new Date(b.ultimo_acesso) - new Date(a.ultimo_acesso)
-          : new Date(a.ultimo_acesso) - new Date(b.ultimo_acesso);
-      });
-      
-      return result;
-    });
+    if (!a.ultimo_acesso) return lastAccessSort.value === 'recent' ? 1 : -1;
+    if (!b.ultimo_acesso) return lastAccessSort.value === 'recent' ? -1 : 1;
+    
+    return lastAccessSort.value === 'recent' 
+      ? new Date(b.ultimo_acesso) - new Date(a.ultimo_acesso)
+      : new Date(a.ultimo_acesso) - new Date(b.ultimo_acesso);
+  });
+  
+  return result;
+});
 
-    const handleSubmit = async () => {
-      if (!validateEmail(email.value)) {
-        notification.value = { message: 'Email inválido.', type: 'error' };
-        setTimeout(() => {
-          notification.value = { message: "", type: "" };
-        }, 3000);
-        return;
-      }
+const handleSubmit = async () => {
+  if (!validateEmail(email.value)) {
+    notification.value = { message: 'Email inválido.', type: 'error' };
+    setTimeout(() => {
+      notification.value = { message: "", type: "" };
+    }, 3000);
+    return;
+  }
 
-      const { data, error } = await supabase.auth.signUp({
-        email: email.value,
-        password: senha.value,
-      });
+  const { data, error } = await supabase.auth.signUp({
+    email: email.value,
+    password: senha.value,
+  });
 
-      if (error) {
-        notification.value = { message: `Erro ao criar usuário: ${error.message}`, type: 'error' };
-        setTimeout(() => {
-          notification.value = { message: "", type: "" };
-        }, 3000);
-        return;
-      }
+  if (error) {
+    notification.value = { message: `Erro ao criar usuário: ${error.message}`, type: 'error' };
+    setTimeout(() => {
+      notification.value = { message: "", type: "" };
+    }, 3000);
+    return;
+  }
 
-      let user = null;
-      while (!user) {
-        const { data: userData, error: userError } = await supabase.auth.getUser();
-        if (userError) {
-          notification.value = { message: `Erro ao obter usuário: ${userError.message}`, type: 'error' };
-          setTimeout(() => {
-            notification.value = { message: "", type: "" };
-          }, 3000);
-          return;
-        }
-        user = userData.user;
-      }
-
-      const uid = user.id;
-
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
-        .insert([
-          { user_id: uid, nome: nome.value, cargo: cargo.value, user_email: email.value, adminProfile: adminProfile.value, firstLogin: true },
-        ]);
-
-      if (profileError) {
-        notification.value = { message: `Erro ao adicionar usuário na tabela profiles: ${profileError.message}`, type: 'error' };
-        setTimeout(() => {
-          notification.value = { message: "", type: "" };
-        }, 3000);
-        return;
-      }
-
-      notification.value = { message: 'Usuário criado com sucesso!', type: 'success' };
+  let user = null;
+  while (!user) {
+    const { data: userData, error: userError } = await supabase.auth.getUser();
+    if (userError) {
+      notification.value = { message: `Erro ao obter usuário: ${userError.message}`, type: 'error' };
       setTimeout(() => {
         notification.value = { message: "", type: "" };
       }, 3000);
+      return;
+    }
+    user = userData.user;
+  }
 
-      nome.value = '';
-      cargo.value = '';
-      email.value = '';
-      senha.value = '';
-      adminProfile.value = false;
+  const uid = user.id;
 
-      fetchUsers();
-    };
+  const { data: profileData, error: profileError } = await supabase
+    .from('profiles')
+    .insert([
+      { user_id: uid, nome: nome.value, cargo: cargo.value, user_email: email.value, adminProfile: adminProfile.value, firstLogin: true },
+    ]);
 
-    onMounted(fetchUsers);
+  if (profileError) {
+    notification.value = { message: `Erro ao adicionar usuário na tabela profiles: ${profileError.message}`, type: 'error' };
+    setTimeout(() => {
+      notification.value = { message: "", type: "" };
+    }, 3000);
+    return;
+  }
 
-    return {
-      nome,
-      cargo,
-      email,
-      senha,
-      adminProfile,
-      notification,
-      users,
-      sortOrder,
-      adminFilter,
-      lastAccessSort,
-      searchQuery,
-      handleSubmit,
-      formatDate,
-      filteredAndSortedUsers,
-    };
-  },
+  notification.value = { message: 'Usuário criado com sucesso!', type: 'success' };
+  setTimeout(() => {
+    notification.value = { message: "", type: "" };
+  }, 3000);
+
+  nome.value = '';
+  cargo.value = '';
+  email.value = '';
+  senha.value = '';
+  adminProfile.value = false;
+
+  fetchUsers();
+};
+
+const toggleActionMenu = (user) => {
+  users.value.forEach(u => {
+    if (u.id !== user.id) u.showActions = false;
+  });
+  user.showActions = !user.showActions;
+};
+
+const editUser = (user) => {
+  console.log('Editando usuário:', user);
+  // Lógica de edição
+};
+
+const deleteUser = async (user) => {
+  const confirmDelete = confirm(`Tem certeza que deseja excluir o usuário ${user.nome}?`);
+  
+  if (confirmDelete) {
+    try {
+      // Primeiro, exclui da tabela de autenticação usando a função de serviço de admin
+      const { error: authError } = await supabase.auth.admin.deleteUser(user.user_id);
+      
+      if (authError) throw authError;
+
+      // Depois, exclui da tabela de perfis
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('user_id', user.user_id);
+      
+      if (profileError) throw profileError;
+
+      // Atualiza lista de usuários
+      await fetchUsers();
+
+      notification.value = { 
+        message: 'Usuário excluído com sucesso!', 
+        type: 'success' 
+      };
+    } catch (error) {
+      notification.value = { 
+        message: `Erro ao excluir usuário: ${error.message}`, 
+        type: 'error' 
+      };
+    }
+
+    // Limpa notificação após 3 segundos
+    setTimeout(() => {
+      notification.value = { message: "", type: "" };
+    }, 3000);
+  }
+};
+
+onMounted(fetchUsers);
+
+return {
+  nome,
+  cargo,
+  email,
+  senha,
+  adminProfile,
+  notification,
+  users,
+  sortOrder,
+  adminFilter,
+  lastAccessSort,
+  searchQuery,
+  handleSubmit,
+  formatDate,
+  filteredAndSortedUsers,
+  toggleActionMenu,
+  editUser,
+  deleteUser
+};
+},
 };
 </script>
 
