@@ -12,6 +12,7 @@ body, html {
   padding: 0;
   height: 100%;
   overflow: hidden; /* Remover rolagem */
+  
 }
 
 /* Estilos da top-nav */
@@ -1277,7 +1278,7 @@ body, html {
     position: relative;
     z-index: 1;
     --tw-bg-opacity: 1;
-    background-color: rgb(241 245 249 / var(--tw-bg-opacity));
+    background-color: #00860434;
     font-family: Satoshi, sans-serif;
     font-size: 1rem;
     line-height: 1.5rem;

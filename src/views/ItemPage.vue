@@ -23,8 +23,9 @@
           </div>
           <div class="embed-container" v-html="selectedTab.content"></div>
         </div>
+        <Ticker />
       </div>
-      <Ticker />
+     
     </div>
   </div>
 </template>
@@ -92,6 +93,7 @@ export default {
   flex: 1;
   display: flex;
   flex-direction: column;
+  padding: 10px;
 }
 
 .main-column {
@@ -101,12 +103,17 @@ export default {
 }
 
 .embed-container {
-  flex: 1;
-  display: flex;
+  width: 100%;
+  height: 100%;
 }
 
 .full-screen {
   width: 100%;
   height: 100%;
+}
+.embed-content {
+  width: 100%;
+  height: 100%;
+  border-radius: 5px;
 }
 </style>
