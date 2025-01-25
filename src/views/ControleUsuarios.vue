@@ -149,7 +149,7 @@ import Sidebar from '@/components/Sidebar.vue';
 import Ticker from '@/components/Ticker.vue';
 
 export default {
-  name: 'ControleAcesso',
+  name: 'ControleUsuarios',
   components: {
     Navbar,
     Sidebar,

@@ -11,7 +11,7 @@
             </span>
           </a>
         </div>
-        <router-link v-if="isAdmin" to="/controle-de-acesso" class="flex items-center gap-3 py-2 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+        <router-link v-if="isAdmin" to="/dashboard-controle" class="flex items-center gap-3 py-2 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
           Painel
         </router-link>
         <button @click="handleLogout" class="flex items-center gap-3 py-2 px-6 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
