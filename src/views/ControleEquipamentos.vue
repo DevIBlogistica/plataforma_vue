@@ -7,7 +7,7 @@
           <div class="form-container">
             <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                <h3 class="font-medium text-black dark:text-white text-center">Cadastro de Equipamento</h3>
+                <h3 class="font-medium text-black dark:text-white text-center">Retirada de equipamento</h3>
               </div>
               <form @submit.prevent="handleSubmit">
                 <div class="p-6.5">
@@ -57,7 +57,7 @@
           <div class="table-wrapper">
             <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark flex items-center justify-between">
-                <h3 class="font-medium text-black dark:text-white text-center flex-grow">Equipamentos cadastrados</h3>
+                <h3 class="font-medium text-black dark:text-white text-center flex-grow">Registro de retiradas</h3>
                 <input 
                   v-model="searchQuery" 
                   placeholder="Pesquisar equipamentos..." 
