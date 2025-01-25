@@ -9,49 +9,48 @@
               <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
                 <h3 class="font-medium text-black dark:text-white text-center">Retirada de equipamento</h3>
               </div>
-              <form @submit.prevent="handleSubmit">
-                <div class="p-6.5">
-                  <div class="mb-5">
-                    <input v-model="codigo_patrimonio" type="text" placeholder="Código Patrimônio" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required pattern="\d{1,6}" title="Somente números, até 6 dígitos" />
-                  </div>
-                  <div class="mb-5">
-                    <input v-model="retirado_por" type="text" placeholder="Retirado por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required />
-                  </div>
-                  <div class="mb-5">
-                    <label for="data_retirada" class="block text-sm font-medium text-black dark:text-white">Data de Retirada</label>
-                    <input v-model="data_retirada" type="date" id="data_retirada" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required />
-                  </div>
-                  <div class="mb-5">
-                    <input v-model="frota_instalada" type="text" placeholder="Frota Instalada" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required pattern="\d{1,6}" title="Somente números, até 6 dígitos" />
-                  </div>
-                  <div class="mb-5">
-                    <input v-model="entregue_por" type="text" placeholder="Entregue por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required />
-                  </div>
-                  <div class="mb-5">
-                    <textarea v-model="observacoes" placeholder="Observações" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"></textarea>
-                  </div>
-                  <div v-if="isEditing" class="mb-5">
-                    <label for="data_devolucao" class="block text-sm font-medium text-black dark:text-white">Data de Devolução</label>
-                    <input v-model="data_devolucao" type="date" id="data_devolucao" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
-                  </div>
-                  <div v-if="isEditing" class="mb-5">
-                    <input v-model="devolvido_por" type="text" placeholder="Devolvido por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
-                  </div>
-                  <div v-if="isEditing" class="mb-5">
-                    <input v-model="recebido_por" type="text" placeholder="Recebido por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
-                  </div>
-                  <div v-if="isEditing" class="mb-5">
-                    <textarea v-model="observacoes" placeholder="Observações" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"></textarea>
-                  </div>
-                  <button type="submit" class="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
-                    {{ editingEquipmentId ? 'Atualizar' : 'Cadastrar' }}
-                  </button>
-                  <button v-if="editingEquipmentId" @click="cancelEdit" type="button" class="flex w-full justify-center rounded bg-secondary p-3 font-medium text-gray hover:bg-opacity-90 mt-2 cancel-button">
-                    Cancelar
-                  </button>
-                  <p v-if="notification.message" :class="['notification', notification.type]">{{ notification.message }}</p>
-                </div>
-              </form>
+              <div class="scroll-form">
+                <form @submit.prevent="handleSubmit">
+  <div class="p-6.5 form-content">
+    <div class="mb-5">
+      <input v-model="codigo_patrimonio" type="text" placeholder="Código Patrimônio" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required pattern="\d{1,6}" title="Somente números, até 6 dígitos" />
+    </div>
+    <div class="mb-5">
+      <input v-model="retirado_por" type="text" placeholder="Retirado por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required />
+    </div>
+    <div class="mb-5">
+      <label for="data_retirada" class="block text-sm font-medium text-black dark:text-white">Data de Retirada</label>
+      <input v-model="data_retirada" type="date" id="data_retirada" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required />
+    </div>
+    <div class="mb-5">
+      <input v-model="frota_instalada" type="text" placeholder="Frota Instalada" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required pattern="\d{1,6}" title="Somente números, até 6 dígitos" />
+    </div>
+    <div class="mb-5">
+      <input v-model="entregue_por" type="text" placeholder="Entregue por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required />
+    </div>
+    <div class="mb-5">
+      <textarea v-model="observacoes" placeholder="Observações" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"></textarea>
+    </div>
+    <div v-if="isEditing" class="mb-5">
+      <label for="data_devolucao" class="block text-sm font-medium text-black dark:text-white">Data de Devolução</label>
+      <input v-model="data_devolucao" type="date" id="data_devolucao" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
+    </div>
+    <div v-if="isEditing" class="mb-5">
+      <input v-model="devolvido_por" type="text" placeholder="Devolvido por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
+    </div>
+    <div v-if="isEditing" class="mb-5">
+      <input v-model="recebido_por" type="text" placeholder="Recebido por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
+    </div>
+    <button type="submit" class="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
+      {{ editingEquipmentId ? 'Atualizar' : 'Cadastrar' }}
+    </button>
+    <button v-if="editingEquipmentId" @click="cancelEdit" type="button" class="flex w-full justify-center rounded bg-secondary p-3 font-medium text-gray hover:bg-opacity-90 mt-2 cancel-button">
+      Cancelar
+    </button>
+    <p v-if="notification.message" :class="['notification', notification.type]">{{ notification.message }}</p>
+  </div>
+</form>
+            </div>
             </div>
           </div>
           <div class="table-wrapper">
@@ -165,7 +164,7 @@ export default {
       const day = String(date.getUTCDate()).padStart(2, '0');
       const month = String(date.getUTCMonth() + 1).padStart(2, '0');
       const year = date.getUTCFullYear();
-      return `${day}-${month}-${year}`;
+      return `${year}-${month}-${day}`;
     };
 
     const fetchEquipments = async () => {
@@ -261,15 +260,18 @@ export default {
     };
 
     const editEquipment = (equipment) => {
+      // Preencher campos de retirada
       codigo_patrimonio.value = equipment.codigo_patrimonio;
       retirado_por.value = equipment.retirado_por;
-      data_retirada.value = equipment.data_retirada;
+      data_retirada.value = equipment.data_retirada ? formatDate(equipment.data_retirada) : '';
       frota_instalada.value = equipment.frota_instalada;
       entregue_por.value = equipment.entregue_por;
-      data_devolucao.value = equipment.data_devolucao;
+
+      // Preencher campos de devolução
+      data_devolucao.value = equipment.data_devolucao ? formatDate(equipment.data_devolucao) : '';
       devolvido_por.value = equipment.devolvido_por;
       recebido_por.value = equipment.recebido_por;
-      observacoes.value = equipment.observacoes;
+      observacoes.value = equipment.observacoes; // Manter o campo observações preenchido e editável
       editingEquipmentId.value = equipment.id;
     };
 
@@ -327,8 +329,8 @@ export default {
         result = result.filter(equipment => 
           equipment.codigo_patrimonio.toLowerCase().includes(query) ||
           equipment.retirado_por.toLowerCase().includes(query) ||
-          equipment.data_retirada.toLowerCase().includes(query) ||
-          equipment.frota_instalada.toLowerCase().includes(query) ||
+          (equipment.data_retirada ? equipment.data_retirada.toLowerCase().includes(query) : false) ||
+          (equipment.frota_instalada ? equipment.frota_instalada.toString().toLowerCase().includes(query) : false) ||
           equipment.entregue_por.toLowerCase().includes(query) ||
           equipment.observacoes.toLowerCase().includes(query) ||
           (equipment.devolvido ? 'Devolvido' : 'Em campo').toLowerCase().includes(query)
@@ -387,7 +389,12 @@ export default {
 
 .form-container {
   width: 30%;
-  margin: 0 auto;
+   margin: 0 auto;
+}
+
+.scroll-form {
+  max-height: 700px;
+  overflow-y: auto;
 }
 
 .table-wrapper {
@@ -438,7 +445,7 @@ input[type="text"][pattern]::-webkit-inner-spin-button {
 }
 
 .observacoes-cell {
-  max-width: 200px;
+  max-width: 400px;
   white-space: normal;
   word-break: break-word;
 }
