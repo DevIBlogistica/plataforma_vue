@@ -61,7 +61,7 @@
                 <input 
                   v-model="searchQuery" 
                   placeholder="Pesquisar equipamentos..." 
-                  class="border rounded px-2 py-1 w-64 text-sm"
+                  class="border rounded px-2 w-64 text-sm"
                 />
               </div>
               <div class="p-1">

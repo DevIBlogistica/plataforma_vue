@@ -9,7 +9,7 @@
             <div @click="$router.push('/controle-usuarios')" 
                  class="card hover:shadow-lg cursor-pointer">
               <div class="p-6 text-center">
-                <h3 class="text-xl font-semibold text-black mb-4">Controle de Usuários</h3>
+                <h3 class="text-xl font-semibold text-black mb-4">Registro de Usuários</h3>
                 <p class="text-gray-600">Gerenciamento de usuários e permissões</p>
               </div>
             </div>
@@ -17,7 +17,7 @@
             <div @click="$router.push('/controle-equipamentos')" 
                  class="card hover:shadow-lg cursor-pointer">
               <div class="p-6 text-center">
-                <h3 class="text-xl font-semibold text-black mb-4">Controle de Equipamentos</h3>
+                <h3 class="text-xl font-semibold text-black mb-4">Retirada de Equipamentos</h3>
                 <p class="text-gray-600">Gerenciamento de retiradas e devoluções</p>
               </div>
             </div>
