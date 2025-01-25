@@ -7,7 +7,7 @@
           <div class="form-container">
             <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                <h3 class="font-medium text-black dark:text-white text-center">Registro de retirada</h3>
+                <h3 class="font-medium text-black dark:text-white text-center">Cadastro de Equipamento</h3>
               </div>
               <form @submit.prevent="handleSubmit">
                 <div class="p-6.5">
@@ -27,6 +27,9 @@
                   <div class="mb-5">
                     <input v-model="entregue_por" type="text" placeholder="Entregue por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required />
                   </div>
+                  <div class="mb-5">
+                    <textarea v-model="observacoes" placeholder="Observações" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"></textarea>
+                  </div>
                   <div v-if="isEditing" class="mb-5">
                     <label for="data_devolucao" class="block text-sm font-medium text-black dark:text-white">Data de Devolução</label>
                     <input v-model="data_devolucao" type="date" id="data_devolucao" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
@@ -37,7 +40,7 @@
                   <div v-if="isEditing" class="mb-5">
                     <input v-model="recebido_por" type="text" placeholder="Recebido por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
                   </div>
-                  <div class="mb-5">
+                  <div v-if="isEditing" class="mb-5">
                     <textarea v-model="observacoes" placeholder="Observações" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"></textarea>
                   </div>
                   <button type="submit" class="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
@@ -54,7 +57,7 @@
           <div class="table-wrapper">
             <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
               <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark flex items-center justify-between">
-                <h3 class="font-medium text-black dark:text-white text-center flex-grow">Equipamentos retirados</h3>
+                <h3 class="font-medium text-black dark:text-white text-center flex-grow">Equipamentos cadastrados</h3>
                 <input 
                   v-model="searchQuery" 
                   placeholder="Pesquisar equipamentos..." 
@@ -83,7 +86,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatDate(equipment.data_retirada) }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.frota_instalada }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.entregue_por }}</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.observacoes }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 observacoes-cell">{{ equipment.observacoes }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.devolvido ? 'Devolvido' : 'Em campo' }}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
                           <div class="relative">
@@ -159,9 +162,9 @@ export default {
 
     const formatDate = (dateString) => {
       const date = new Date(dateString);
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
+      const day = String(date.getUTCDate()).padStart(2, '0');
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+      const year = date.getUTCFullYear();
       return `${day}-${month}-${year}`;
     };
 
@@ -397,6 +400,7 @@ export default {
 }
 
 .ticker-wrapper {
+  width: 100%;
   padding: 10px;
 }
 
@@ -431,5 +435,11 @@ input[type="text"][pattern]::-webkit-outer-spin-button,
 input[type="text"][pattern]::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+.observacoes-cell {
+  max-width: 200px;
+  white-space: normal;
+  word-break: break-word;
 }
 </style>
