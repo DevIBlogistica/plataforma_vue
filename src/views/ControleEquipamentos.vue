@@ -1,84 +1,127 @@
 <template>
-    <div class="layout">
-      <Sidebar />
-      <div class="main-content">
-        <Navbar />
-        <div class="content-container">
-          <div class="form-container">
-            <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
-                <h3 class="font-medium text-black dark:text-white text-center">Retirada de equipamento</h3>
-              </div>
-              <div class="scroll-form">
-                <form @submit.prevent="handleSubmit">
-  <div class="p-6.5 form-content">
-    <div class="mb-5">
-      <input v-model="codigo_patrimonio" type="text" placeholder="Código Patrimônio" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required pattern="\d{1,6}" title="Somente números, até 6 dígitos" />
-    </div>
-    <div class="mb-5">
-      <input v-model="retirado_por" type="text" placeholder="Retirado por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required />
-    </div>
-    <div class="mb-5">
-      <label for="data_retirada" class="block text-sm font-medium text-black dark:text-white">Data de Retirada</label>
-      <input v-model="data_retirada" type="date" id="data_retirada" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required />
-    </div>
-    <div class="mb-5">
-      <input v-model="frota_instalada" type="text" placeholder="Frota Instalada" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required pattern="\d{1,6}" title="Somente números, até 6 dígitos" />
-    </div>
-    <div class="mb-5">
-      <input v-model="entregue_por" type="text" placeholder="Entregue por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" :disabled="isEditing" required />
-    </div>
-    <div class="mb-5">
-      <textarea v-model="observacoes" placeholder="Observações" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"></textarea>
-    </div>
-    <div v-if="isEditing" class="mb-5">
-      <label for="data_devolucao" class="block text-sm font-medium text-black dark:text-white">Data de Devolução</label>
-      <input v-model="data_devolucao" type="date" id="data_devolucao" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
-    </div>
-    <div v-if="isEditing" class="mb-5">
-      <input v-model="devolvido_por" type="text" placeholder="Devolvido por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
-    </div>
-    <div v-if="isEditing" class="mb-5">
-      <input v-model="recebido_por" type="text" placeholder="Recebido por" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
-    </div>
-    <button type="submit" class="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
-      {{ editingEquipmentId ? 'Atualizar' : 'Cadastrar' }}
-    </button>
-    <button v-if="editingEquipmentId" @click="cancelEdit" type="button" class="flex w-full justify-center rounded bg-secondary p-3 font-medium text-gray hover:bg-opacity-90 mt-2 cancel-button">
-      Cancelar
-    </button>
-    <p v-if="notification.message" :class="['notification', notification.type]">{{ notification.message }}</p>
-  </div>
-</form>
+  <div class="layout">
+    <Sidebar />
+    <div class="main-content">
+      <Navbar />
+      <div class="content-container">
+        <div class="form-container">
+          <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark">
+              <h3 class="font-medium text-black dark:text-white text-center">Retirada de equipamento</h3>
             </div>
+            <div class="scroll-form">
+              <form @submit.prevent="handleSubmit">
+                <div class="p-6.5 form-content">
+                  <div class="mb-5">
+                    <input v-model="codigo_patrimonio" type="text" placeholder="Código Patrimônio"
+                      class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      :disabled="isEditing" required pattern="\d{1,6}" title="Somente números, até 6 dígitos" />
+                  </div>
+                  <div class="mb-5">
+                    <input v-model="retirado_por" type="text" placeholder="Retirado por"
+                      class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      :disabled="isEditing" required />
+                  </div>
+                  <div class="mb-5">
+                    <label for="data_retirada" class="block text-sm font-medium text-black dark:text-white">Data de
+                      Retirada</label>
+                    <input v-model="data_retirada" type="date" id="data_retirada"
+                      class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      :disabled="isEditing" required />
+                  </div>
+                  <div class="mb-5">
+                    <input v-model="frota_instalada" type="text" placeholder="Frota Instalada"
+                      class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      :disabled="isEditing" required pattern="\d{1,6}" title="Somente números, até 6 dígitos" />
+                  </div>
+                  <div class="mb-5">
+                    <input v-model="entregue_por" type="text" placeholder="Entregue por"
+                      class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      :disabled="isEditing" required />
+                  </div>
+                  <div class="mb-5">
+                    <textarea v-model="observacoes" placeholder="Observações"
+                      class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"></textarea>
+                  </div>
+                  <div v-if="isEditing" class="mb-5">
+                    <label for="data_devolucao" class="block text-sm font-medium text-black dark:text-white">Data de
+                      Devolução</label>
+                    <input v-model="data_devolucao" type="date" id="data_devolucao"
+                      class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      required />
+                  </div>
+                  <div v-if="isEditing" class="mb-5">
+                    <input v-model="devolvido_por" type="text" placeholder="Devolvido por"
+                      class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      required />
+                  </div>
+                  <div v-if="isEditing" class="mb-5">
+                    <input v-model="recebido_por" type="text" placeholder="Recebido por"
+                      class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
+                      required />
+                  </div>
+                  <button type="submit"
+                    class="flex w-full justify-center rounded bg-primary p-3 font-medium text-gray hover:bg-opacity-90">
+                    {{ editingEquipmentId ? 'Atualizar' : 'Cadastrar' }}
+                  </button>
+                  <button v-if="editingEquipmentId" @click="cancelEdit" type="button"
+                    class="flex w-full justify-center rounded bg-secondary p-3 font-medium text-gray hover:bg-opacity-90 mt-2 cancel-button">
+                    Cancelar
+                  </button>
+                  <p v-if="notification.message" :class="['notification', notification.type]">{{ notification.message }}
+                  </p>
+                </div>
+              </form>
             </div>
           </div>
-          <div class="table-wrapper">
-            <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-              <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark flex items-center justify-between">
-                <h3 class="font-medium text-black dark:text-white text-center flex-grow">Registro de retiradas</h3>
-                <input 
-                  v-model="searchQuery" 
-                  placeholder="Pesquisar equipamentos..." 
-                  class="border rounded px-2 w-64 text-sm"
-                />
-              </div>
-              <div class="p-1">
-                <div class="table-container">
-                  <table class="min-w-full divide-y divide-gray-200">
-                    <thead>
+        </div>
+        
+        <div class="table-wrapper relative">
+    <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark flex items-center justify-between">
+        <h3 class="font-medium text-black dark:text-white text-center flex-grow">Registro de retiradas</h3>
+        <input v-model="searchQuery" placeholder="Pesquisar equipamentos..." class="border rounded px-2 w-64 text-sm" />
+      </div>
+
+            <!-- Início da Tabela de equipamentos -->
+            <div class="p-1">
+  <div class="table-container overflow-x-auto custom-scrollbar">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead>
         <tr>
-          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Código Patrimônio</th>
-          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Retirado por</th>
-          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data de Retirada</th>
-          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Frota Instalada</th>
-          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Entregue por</th>
-          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Observações</th>
-          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data de Devolução</th>
-          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Devolvido por</th>
-          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recebido por</th>
-          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Código Patrimônio
+          </th>
+          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Retirado por
+          </th>
+          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Data de Retirada
+          </th>
+          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Frota Instalada
+          </th>
+          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Entregue por
+          </th>
+          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Observações
+          </th>
+          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Status
+          </th>
+          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Data de Devolução
+          </th>
+          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Devolvido por
+          </th>
+          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Recebido por
+          </th>
+          <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+            Ações
+          </th>
         </tr>
       </thead>
       <tbody class="bg-white divide-y divide-gray-200">
@@ -94,26 +137,18 @@
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.devolvido_por }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.recebido_por }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
-            <div class="relative">
-              <button 
-                @click="toggleActionMenu(equipment)" 
-                class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-black shadow-11 hover:text-primary dark:bg-meta-4 dark:text-white dark:shadow-none">
-                Ações 
+            <div class="relative inline-block text-left">
+              <button @click="toggleActionMenu(equipment)" class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-black shadow-11 hover:text-primary dark:bg-meta-4 dark:text-white dark:shadow-none">
+                Ações
                 <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M8.00039 11.4C7.85039 11.4 7.72539 11.35 7.60039 11.25L1.85039 5.60005C1.62539 5.37505 1.62539 5.02505 1.85039 4.80005C2.07539 4.57505 2.42539 4.57505 2.65039 4.80005L8.00039 10.025L13.3504 4.75005C13.5754 4.52505 13.9254 4.52505 14.1504 4.75005C14.3754 4.97505 14.3754 5.32505 14.1504 5.55005L8.40039 11.2C8.27539 11.325 8.15039 11.4 8.00039 11.4Z" fill=""></path>
                 </svg>
               </button>
-              <div 
-                v-if="equipment.showActions" 
-                class="absolute right-0 z-10 w-full max-w-39.5 rounded-[5px] bg-white py-2.5 shadow-12 dark:bg-boxdark top-full mt-1">
-                <button 
-                  @click="editEquipment(equipment)" 
-                  class="flex w-full px-4 py-2 text-sm hover:bg-whiter hover:text-primary dark:hover:bg-meta-4">
+              <div v-if="equipment.showActions" class="absolute right-0 z-10 w-full max-w-39.5 rounded-[5px] bg-white py-2.5 shadow-12 dark:bg-boxdark top-full mt-1">
+                <button @click="editEquipment(equipment)" class="flex w-full px-4 py-2 text-sm hover:bg-whiter hover:text-primary dark:hover:bg-meta-4">
                   Devolução
                 </button>
-                <button 
-                  @click="deleteEquipment(equipment)" 
-                  class="flex w-full px-4 py-2 text-sm hover:bg-whiter hover:text-primary dark:hover:bg-meta-4">
+                <button @click="deleteEquipment(equipment)" class="flex w-full px-4 py-2 text-sm hover:bg-whiter hover:text-primary dark:hover:bg-meta-4">
                   Excluir
                 </button>
               </div>
@@ -121,18 +156,19 @@
           </td>
         </tr>
       </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
+    </table>
+  </div>
+</div>
+<!-- Fim da Tabela de equipamentos -->
           </div>
         </div>
-        <div class="ticker-wrapper">
-          <Ticker />
-        </div>
+      </div>
+      <div class="ticker-wrapper">
+        <Ticker />
       </div>
     </div>
-  </template>
+  </div>
+</template>
 
 <script>
 import { ref, onMounted, computed } from 'vue';
@@ -301,26 +337,26 @@ export default {
 
     const deleteEquipment = async (equipment) => {
       const confirmDelete = confirm(`Tem certeza que deseja excluir o equipamento ${equipment.codigo_patrimonio}?`);
-      
+
       if (confirmDelete) {
         try {
           const { error } = await supabase
             .from('controle_saidas')
             .delete()
             .eq('id', equipment.id);
-          
+
           if (error) throw error;
 
           await fetchEquipments();
 
-          notification.value = { 
-            message: 'Equipamento excluído com sucesso!', 
-            type: 'success' 
+          notification.value = {
+            message: 'Equipamento excluído com sucesso!',
+            type: 'success'
           };
         } catch (error) {
-          notification.value = { 
-            message: `Erro ao excluir equipamento: ${error.message}`, 
-            type: 'error' 
+          notification.value = {
+            message: `Erro ao excluir equipamento: ${error.message}`,
+            type: 'error'
           };
         }
 
@@ -334,10 +370,10 @@ export default {
 
     const filteredAndSortedEquipments = computed(() => {
       let result = [...equipments.value];
-      
+
       if (searchQuery.value) {
         const query = searchQuery.value.toLowerCase();
-        result = result.filter(equipment => 
+        result = result.filter(equipment =>
           equipment.codigo_patrimonio.toLowerCase().includes(query) ||
           equipment.retirado_por.toLowerCase().includes(query) ||
           (equipment.data_retirada ? equipment.data_retirada.toLowerCase().includes(query) : false) ||
@@ -400,8 +436,8 @@ export default {
 }
 
 .form-container {
-  width: 30%;
-   margin: 0 auto;
+  width: 20%;
+  margin: 0 auto;
 }
 
 .scroll-form {
@@ -410,7 +446,7 @@ export default {
 }
 
 .table-wrapper {
-  width: 70%;
+  width: 80%;
   margin-left: 10px;
 }
 
@@ -460,5 +496,18 @@ input[type="text"][pattern]::-webkit-inner-spin-button {
   max-width: 200px;
   white-space: normal;
   word-break: break-word;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 4px; /* Altura mínima da barra de rolagem horizontal */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #15803ca4; /* Cor da barra de rolagem */
+  border-radius: 10px; /* Bordas arredondadas */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #15803d; /* Cor da barra de rolagem ao passar o mouse */
 }
 </style>
