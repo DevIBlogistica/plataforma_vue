@@ -21,6 +21,14 @@
                 <p class="text-gray-600">Gerenciamento de retiradas e devoluções</p>
               </div>
             </div>
+            <!-- Card Arquivos -->
+            <div @click="$router.push('/controle-arquivos')" 
+                 class="card hover:shadow-lg cursor-pointer">
+              <div class="p-6 text-center">
+                <h3 class="text-xl font-semibold text-black mb-4">Arquivos</h3>
+                <p class="text-gray-600">Gerenciamento de arquivos disponibilizados</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

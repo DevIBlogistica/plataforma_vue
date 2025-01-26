@@ -95,7 +95,7 @@ export const pagesConfig = {
         // Frente 1 Aba 1
         { name: 'Plantio Diário', content: '<iframe title="Dashboard de Monitoramento do Plantio" width="100%" height="100%" src="https://app.powerbi.com/view?r=eyJrIjoiYWYyMzdkZjYtMjBmMy00MmQ0LWEwZmQtMmNkNWI2NmI0MjkzIiwidCI6IjY1OWNlMmI4LTA3MTQtNDE5OC04YzM4LWRjOWI2MGFhYmI1NyJ9" frameborder="0" allowFullScreen="true"></iframe>' },
         // Frente 1 Aba 2
-        { name: 'Frente 1 Aba 2', content: '<iframe title="Password" width="600" height="373.5" src="https://exemplo.com/password" frameborder="0" allowFullScreen="true"></iframe>' }
+        { name: 'Códigos de Plantio', content: '<iframe src="https://kjlwqezxzqjfhacmjhbh.supabase.co/storage/v1/object/public/pdfs/Codigos_de_Plantio.pdf" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>' }
       ]
     },
   },

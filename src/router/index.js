@@ -8,6 +8,7 @@ import TestPage from '@/views/TestPage.vue';
 import DashboardControle from '@/views/DashboardControle.vue';
 import ControleEquipamentos from '@/views/ControleEquipamentos.vue'
 import ControleUsuarios from '@/views/ControleUsuarios.vue';
+import ControleArquivos from '@/views/ControleArquivos.vue';
 
 
 
@@ -53,6 +54,11 @@ const routes = [
     path: '/controle-equipamentos',
     name: 'ControleEquipamentos',
     component: ControleEquipamentos
+  },
+  {
+    path: '/controle-arquivos',
+    name: 'ControleArquivos',
+    component: ControleArquivos
   }
   
 ];
