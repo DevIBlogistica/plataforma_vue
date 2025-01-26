@@ -27,11 +27,69 @@
                     Copiar
                   </button>
                 </div>
-                <textarea readonly class="w-full rounded-lg border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" style="height: auto; overflow: hidden;">{{ iframeCode }}</textarea>
+                <div class="message-box">
+                  <textarea readonly class="w-full rounded-lg border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" style="height: auto; overflow: hidden; min-height: 180px;" v-model="iframeCode"></textarea>
+                </div>
               </div>
               <div v-if="fileUrl" class="mt-4">
                 <label class="mb-3 block text-sm font-medium text-black dark:text-white">URL do Arquivo</label>
                 <input type="text" readonly :value="fileUrl" class="w-full rounded-lg border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" disabled>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela de Gerenciamento de Arquivos -->
+        <div class="table-wrapper">
+          <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+            <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark flex items-center justify-between">
+              <h3 class="font-medium text-black dark:text-white text-center flex-grow">Arquivos Disponíveis</h3>
+              <input v-model="searchQuery" placeholder="Pesquisar arquivos..." class="border rounded px-2 w-64 text-sm" />
+            </div>
+            <div class="p-1">
+              <div class="table-container overflow-x-auto custom-scrollbar">
+                <table class="min-w-full divide-y divide-gray-200">
+                  <thead>
+                    <tr>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome do Arquivo</th>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tamanho</th>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data de Envio</th>
+                      <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="file in paginatedFiles" :key="file.name">
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ file.name }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatSize(file.size) }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ file.type }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatDate(file.created_at) }}</td>
+                      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
+                        <div class="relative">
+                          <button @click="toggleActionMenu(file)" class="inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm text-black shadow-11 hover:text-primary dark:bg-meta-4 dark:text-white dark:shadow-none">
+                            Ações 
+                            <svg class="fill-current" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                              <path d="M8.00039 11.4C7.85039 11.4 7.72539 11.35 7.60039 11.25L1.85039 5.60005C1.62539 5.37505 1.62539 5.02505 1.85039 4.80005C2.07539 4.57505 2.42539 4.57505 2.65039 4.80005L8.00039 10.025L13.3504 4.75005C13.5754 4.52505 13.9254 4.52505 14.1504 4.75005C14.3754 4.97505 14.3754 5.32505 14.1504 5.55005L8.40039 11.2C8.27539 11.325 8.15039 11.4 8.00039 11.4Z" fill=""></path>
+                            </svg>
+                          </button>
+                          <div v-if="file.showActions" class="absolute right-0 z-10 w-full max-w-39.5 rounded-[5px] bg-white py-2.5 shadow-12 dark:bg-boxdark top-full mt-1">
+                            <button @click="viewFile(file)" class="flex w-full px-4 py-2 text-sm hover:bg-whiter hover:text-primary dark:hover:bg-meta-4">
+                              Visualizar
+                            </button>
+                            <button @click="deleteFile(file)" class="flex w-full px-4 py-2 text-sm hover:bg-whiter hover:text-primary dark:hover:bg-meta-4">
+                              Excluir
+                            </button>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="pagination mt-4 flex justify-center">
+                <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 mx-1 bg-gray-200 rounded hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600">Anterior</button>
+                <span class="px-4 py-2 mx-1">{{ currentPage }} / {{ totalPages }}</span>
+                <button @click="nextPage" :disabled="currentPage === totalPages" class="px-4 py-2 mx-1 bg-gray-200 rounded hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600">Próxima</button>
               </div>
             </div>
           </div>
@@ -47,11 +105,15 @@
 </template>
 
 <script>
-import { ref } from 'vue';
-import supabase from '@/utils/supabase';
+import { ref, onMounted, computed } from 'vue';
+import { createClient } from '@supabase/supabase-js';
 import Navbar from '@/components/Navbar.vue';
 import Sidebar from '@/components/Sidebar.vue';
 import Ticker from '@/components/Ticker.vue';
+
+const supabaseUrl = 'https://kjlwqezxzqjfhacmjhbh.supabase.co';
+const supabaseKey = 'your-public-anon-key'; // Replace with your public API key
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export default {
   name: 'ControleArquivos',
@@ -64,6 +126,10 @@ export default {
     const fileInput = ref(null);
     const iframeCode = ref('');
     const fileUrl = ref('');
+    const files = ref([]);
+    const searchQuery = ref('');
+    const currentPage = ref(1);
+    const itemsPerPage = 10;
 
     const sanitizeFileName = (fileName) => {
       return fileName
@@ -94,6 +160,7 @@ export default {
 
       fileUrl.value = publicUrl;
       iframeCode.value = `<iframe src="${publicUrl}" width="600" height="400" frameborder="0" allowfullscreen></iframe>`;
+      fetchFiles();
     };
 
     const handleCancel = () => {
@@ -108,13 +175,115 @@ export default {
       });
     };
 
+    const fetchFiles = async () => {
+      const { data, error } = await supabase.storage.from('pdfs').list('', { limit: 100 });
+      if (error) {
+        console.error('Erro ao buscar arquivos:', error.message);
+      } else {
+        files.value = data.map(file => ({
+          name: file.name,
+          size: file.metadata.size,
+          type: file.metadata.mimetype,
+          created_at: file.created_at,
+          url: `https://kjlwqezxzqjfhacmjhbh.supabase.co/storage/v1/object/public/pdfs/${file.name}`,
+          showActions: false
+        }));
+      }
+    };
+
+    const toggleActionMenu = (file) => {
+      files.value.forEach(f => {
+        if (f.name !== file.name) f.showActions = false;
+      });
+      file.showActions = !file.showActions;
+    };
+
+    const viewFile = (file) => {
+      window.open(file.url, '_blank');
+    };
+
+    const deleteFile = async (file) => {
+      const confirmDelete = confirm(`Tem certeza que deseja excluir o arquivo ${file.name}?`);
+
+      if (confirmDelete) {
+        try {
+          const { error } = await supabase.storage.from('pdfs').remove([file.name]);
+
+          if (error) throw error;
+
+          await fetchFiles();
+
+          alert('Arquivo excluído com sucesso!');
+        } catch (error) {
+          alert(`Erro ao excluir arquivo: ${error.message}`);
+        }
+      }
+    };
+
+    const formatSize = (size) => {
+      if (size < 1024) return `${size} B`;
+      if (size < 1024 * 1024) return `${(size / 1024).toFixed(2)} KB`;
+      return `${(size / (1024 * 1024)).toFixed(2)} MB`;
+    };
+
+    const formatDate = (dateString) => {
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
+    const filteredFiles = computed(() => {
+      if (!searchQuery.value) return files.value;
+      return files.value.filter(file =>
+        file.name.toLowerCase().includes(searchQuery.value.toLowerCase())
+      );
+    });
+
+    const paginatedFiles = computed(() => {
+      const start = (currentPage.value - 1) * itemsPerPage;
+      const end = start + itemsPerPage;
+      return filteredFiles.value.slice(start, end);
+    });
+
+    const totalPages = computed(() => {
+      return Math.ceil(filteredFiles.value.length / itemsPerPage);
+    });
+
+    const prevPage = () => {
+      if (currentPage.value > 1) {
+        currentPage.value--;
+      }
+    };
+
+    const nextPage = () => {
+      if (currentPage.value < totalPages.value) {
+        currentPage.value++;
+      }
+    };
+
+    onMounted(() => {
+      fetchFiles();
+    });
+
     return {
       fileInput,
       iframeCode,
       fileUrl,
+      files,
+      searchQuery,
+      currentPage,
+      totalPages,
       handleSubmit,
       handleCancel,
       copyIframeCode,
+      toggleActionMenu,
+      viewFile,
+      deleteFile,
+      formatSize,
+      formatDate,
+      filteredFiles,
+      paginatedFiles,
+      prevPage,
+      nextPage,
     };
   },
 };
@@ -136,29 +305,51 @@ export default {
   flex: 1;
   padding: 10px;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-between;
 }
 
 .form-container {
-  width: 50%;
+  width: 40%;
+}
+
+.table-wrapper {
+  width: 60%;
+  margin-left: 10px;
 }
 
 .ticker-wrapper {
   width: 100%;
   padding: 10px;
 }
+
 textarea {
   resize: none;
   overflow: hidden;
-  height: auto;
-}
-.cancel-button {
-  background-color: rgb(239, 127, 26);
-  color: white;
 }
 
-.cancel-button:hover {
-  background-color: rgba(239, 127, 26, 0.9);
+.message-box {
+  border: 1.5px solid var(--border-stroke);
+  border-radius: 0.375rem;
+  padding: 0.75rem;
+  background-color: var(--bg-transparent);
+  min-height: 180px;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  }
+  
+.custom-scrollbar::-webkit-scrollbar {
+  height: 4px; /* Altura mínima da barra de rolagem horizontal */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #15803ca4; /* Cor da barra de rolagem */
+  border-radius: 10px; /* Bordas arredondadas */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #15803d; /* Cor da barra de rolagem ao passar o mouse */
 }
 </style>
