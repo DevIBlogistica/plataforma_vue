@@ -132,8 +132,8 @@
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.frota_instalada }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.entregue_por }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 observacoes-cell">{{ equipment.observacoes }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.devolvido ? 'Devolvido' : 'Em campo' }}</td>
-          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.devolvido ? formatDate(equipment.data_devolucao) : '' }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.retirado ? 'Retirado' : 'Em campo' }}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.retirado ? "" : formatDate(equipment.data_devolucao) }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.devolvido_por }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ equipment.recebido_por }}</td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 relative">
@@ -217,7 +217,7 @@ export default {
 
     const fetchEquipments = async () => {
       const { data, error } = await supabase
-        .from('controle_saidas')
+        .from('controle_retiradas')
         .select('*');
       if (error) {
         console.error('Erro ao buscar equipamentos:', error.message);
@@ -241,7 +241,7 @@ export default {
   if (editingEquipmentId.value) {
     // Atualizar equipamento existente
     const { error } = await supabase
-      .from('controle_saidas')
+      .from('controle_retiradas')
       .update({
         codigo_patrimonio: codigo_patrimonio.value,
         retirado_por: retirado_por.value,
@@ -252,7 +252,7 @@ export default {
         devolvido_por: devolvido_por.value,
         recebido_por: recebido_por.value,
         observacoes: observacoes.value,
-        devolvido: true,
+        retirado: false, // Atualizar para devolvido
       })
       .eq('id', editingEquipmentId.value);
 
@@ -269,7 +269,7 @@ export default {
   } else {
     // Criar novo equipamento
     const { error } = await supabase
-      .from('controle_saidas')
+      .from('controle_retiradas')
       .insert({
         codigo_patrimonio: codigo_patrimonio.value,
         retirado_por: retirado_por.value,
@@ -277,7 +277,7 @@ export default {
         frota_instalada: frota_instalada.value || null,
         entregue_por: entregue_por.value,
         observacoes: observacoes.value,
-        devolvido: false,
+        retirado: true, // Criar como retirado
       });
 
     if (error) {
@@ -316,20 +316,20 @@ export default {
     };
 
     const editEquipment = (equipment) => {
-      // Preencher campos de retirada
-      codigo_patrimonio.value = equipment.codigo_patrimonio;
-      retirado_por.value = equipment.retirado_por;
-      data_retirada.value = equipment.data_retirada ? formatDate(equipment.data_retirada) : '';
-      //frota_instalada.value = equipment.frota_instalada;
-      entregue_por.value = equipment.entregue_por;
+  // Preencher campos de retirada
+  codigo_patrimonio.value = equipment.codigo_patrimonio;
+  retirado_por.value = equipment.retirado_por;
+  data_retirada.value = equipment.data_retirada ? formatDate(equipment.data_retirada) : '';
+  frota_instalada.value = equipment.frota_instalada;
+  entregue_por.value = equipment.entregue_por;
 
-      // Preencher campos de devolução
-      data_devolucao.value = equipment.data_devolucao ? formatDate(equipment.data_devolucao) : '';
-      devolvido_por.value = equipment.devolvido_por;
-      recebido_por.value = equipment.recebido_por;
-      observacoes.value = equipment.observacoes; // Manter o campo observações preenchido e editável
-      editingEquipmentId.value = equipment.id;
-    };
+  // Preencher campos de devolução
+  data_devolucao.value = equipment.data_devolucao ? formatDate(equipment.data_devolucao) : '';
+  devolvido_por.value = equipment.devolvido_por;
+  recebido_por.value = equipment.recebido_por;
+  observacoes.value = equipment.observacoes; // Manter o campo observações preenchido e editável
+  editingEquipmentId.value = equipment.id;
+};
 
     const cancelEdit = () => {
       editingEquipmentId.value = null;
@@ -350,7 +350,7 @@ export default {
       if (confirmDelete) {
         try {
           const { error } = await supabase
-            .from('controle_saidas')
+            .from('controle_retiradas')
             .delete()
             .eq('id', equipment.id);
 
@@ -389,7 +389,7 @@ export default {
           (equipment.frota_instalada ? equipment.frota_instalada.toString().toLowerCase().includes(query) : false) ||
           equipment.entregue_por.toLowerCase().includes(query) ||
           equipment.observacoes.toLowerCase().includes(query) ||
-          (equipment.devolvido ? 'Devolvido' : 'Em campo').toLowerCase().includes(query)
+          (equipment.retirado ? 'Retirado' : 'Devolvido').toLowerCase().includes(query)
         );
       }
 
