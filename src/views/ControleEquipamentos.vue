@@ -170,6 +170,7 @@
   </div>
 </template>
 
+
 <script>
 import { ref, onMounted, computed } from 'vue';
 import supabase from '@/utils/supabase';
@@ -229,75 +230,83 @@ export default {
     };
 
     const handleSubmit = async () => {
-      if (editingEquipmentId.value) {
-        // Atualizar equipamento existente
-        const { error } = await supabase
-          .from('controle_saidas')
-          .update({
-            codigo_patrimonio: codigo_patrimonio.value,
-            retirado_por: retirado_por.value,
-            data_retirada: parseDate(data_retirada.value),
-            frota_instalada: frota_instalada.value,
-            entregue_por: entregue_por.value,
-            data_devolucao: parseDate(data_devolucao.value),
-            devolvido_por: devolvido_por.value,
-            recebido_por: recebido_por.value,
-            observacoes: observacoes.value,
-            devolvido: true,
-          })
-          .eq('id', editingEquipmentId.value);
+  const isValidDate = (dateString) => {
+    const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+    return regex.test(dateString);
+  };
 
-        if (error) {
-          notification.value = { message: `Erro ao atualizar equipamento: ${error.message}`, type: 'error' };
-          setTimeout(() => {
-            notification.value = { message: "", type: "" };
-          }, 3000);
-          return;
-        }
+  const formattedDateRetirada = isValidDate(data_retirada.value) ? parseDate(data_retirada.value) : null;
+  const formattedDateDevolucao = isValidDate(data_devolucao.value) ? parseDate(data_devolucao.value) : null;
 
-        notification.value = { message: 'Equipamento atualizado com sucesso!', type: 'success' };
-        editingEquipmentId.value = null;
-      } else {
-        // Criar novo equipamento
-        const { error } = await supabase
-          .from('controle_saidas')
-          .insert({
-            codigo_patrimonio: codigo_patrimonio.value,
-            retirado_por: retirado_por.value,
-            data_retirada: parseDate(data_retirada.value),
-            frota_instalada: frota_instalada.value,
-            entregue_por: entregue_por.value,
-            observacoes: observacoes.value,
-            devolvido: false,
-          });
+  if (editingEquipmentId.value) {
+    // Atualizar equipamento existente
+    const { error } = await supabase
+      .from('controle_saidas')
+      .update({
+        codigo_patrimonio: codigo_patrimonio.value,
+        retirado_por: retirado_por.value,
+        data_retirada: formattedDateRetirada,
+        frota_instalada: frota_instalada.value || null,
+        entregue_por: entregue_por.value,
+        data_devolucao: formattedDateDevolucao,
+        devolvido_por: devolvido_por.value,
+        recebido_por: recebido_por.value,
+        observacoes: observacoes.value,
+        devolvido: true,
+      })
+      .eq('id', editingEquipmentId.value);
 
-        if (error) {
-          notification.value = { message: `Erro ao criar equipamento: ${error.message}`, type: 'error' };
-          setTimeout(() => {
-            notification.value = { message: "", type: "" };
-          }, 3000);
-          return;
-        }
-
-        notification.value = { message: 'Equipamento criado com sucesso!', type: 'success' };
-      }
-
+    if (error) {
+      notification.value = { message: `Erro ao atualizar equipamento: ${error.message}`, type: 'error' };
       setTimeout(() => {
         notification.value = { message: "", type: "" };
       }, 3000);
+      return;
+    }
 
-      codigo_patrimonio.value = '';
-      retirado_por.value = '';
-      data_retirada.value = '';
-      frota_instalada.value = '';
-      entregue_por.value = '';
-      data_devolucao.value = '';
-      devolvido_por.value = '';
-      recebido_por.value = '';
-      observacoes.value = '';
+    notification.value = { message: 'Equipamento atualizado com sucesso!', type: 'success' };
+    editingEquipmentId.value = null;
+  } else {
+    // Criar novo equipamento
+    const { error } = await supabase
+      .from('controle_saidas')
+      .insert({
+        codigo_patrimonio: codigo_patrimonio.value,
+        retirado_por: retirado_por.value,
+        data_retirada: formattedDateRetirada,
+        frota_instalada: frota_instalada.value || null,
+        entregue_por: entregue_por.value,
+        observacoes: observacoes.value,
+        devolvido: false,
+      });
 
-      fetchEquipments();
-    };
+    if (error) {
+      notification.value = { message: `Erro ao criar equipamento: ${error.message}`, type: 'error' };
+      setTimeout(() => {
+        notification.value = { message: "", type: "" };
+      }, 3000);
+      return;
+    }
+
+    notification.value = { message: 'Equipamento criado com sucesso!', type: 'success' };
+  }
+
+  setTimeout(() => {
+    notification.value = { message: "", type: "" };
+  }, 3000);
+
+  codigo_patrimonio.value = '';
+  retirado_por.value = '';
+  data_retirada.value = '';
+  frota_instalada.value = '';
+  entregue_por.value = '';
+  data_devolucao.value = '';
+  devolvido_por.value = '';
+  recebido_por.value = '';
+  observacoes.value = '';
+
+  fetchEquipments();
+};
 
     const toggleActionMenu = (equipment) => {
       equipments.value.forEach(e => {
