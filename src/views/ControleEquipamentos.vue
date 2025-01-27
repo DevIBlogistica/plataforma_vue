@@ -28,12 +28,12 @@
                     <input v-model="data_retirada" type="date" id="data_retirada"
                       class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
                       :disabled="isEditing" required />
-                  </div>
-                  <div class="mb-5">
+                    </div>
+                    <div class="mb-5">
                     <input v-model="frota_instalada" type="text" placeholder="Frota Instalada"
                       class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
-                      :disabled="isEditing" required pattern="\d{1,6}" title="Somente números, até 6 dígitos" />
-                  </div>
+                      :disabled="isEditing" pattern="\d{1,6}" title="Somente números, até 6 dígitos" />
+                    </div>
                   <div class="mb-5">
                     <input v-model="entregue_por" type="text" placeholder="Entregue por"
                       class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary"
@@ -320,7 +320,7 @@ export default {
       codigo_patrimonio.value = equipment.codigo_patrimonio;
       retirado_por.value = equipment.retirado_por;
       data_retirada.value = equipment.data_retirada ? formatDate(equipment.data_retirada) : '';
-      frota_instalada.value = equipment.frota_instalada;
+      //frota_instalada.value = equipment.frota_instalada;
       entregue_por.value = equipment.entregue_por;
 
       // Preencher campos de devolução
