@@ -40,15 +40,15 @@
         </div>
 
         <!-- Tabela de Gerenciamento de Arquivos -->
-        <div class="table-wrapper">
-          <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div class="table-wrapper flex-grow">
+          <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark h-full flex flex-col">
             <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark flex items-center justify-between">
               <h3 class="font-medium text-black dark:text-white text-center flex-grow">Arquivos Disponíveis</h3>
               <input v-model="searchQuery" placeholder="Pesquisar arquivos..." class="border rounded px-2 w-64 text-sm" />
             </div>
-            <div class="p-1">
-              <div class="table-container overflow-x-auto custom-scrollbar">
-                <table class="min-w-full divide-y divide-gray-200">
+            <div class="p-1 h-full flex flex-col">
+              <div class="table-container flex-grow">
+                <table class="min-w-full divide-y divide-gray-200 h-full">
                   <thead>
                     <tr>
                       <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome do Arquivo</th>
@@ -58,8 +58,8 @@
                       <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                     </tr>
                   </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="file in paginatedFiles" :key="file.name">
+                  <tbody class="bg-white divide-y divide-gray-200 h-full align-top">
+                    <tr v-for="file in paginatedFiles" :key="file.name" class="align-top">
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ file.name }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatSize(file.size) }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ file.type }}</td>
@@ -315,6 +315,7 @@ export default {
 .table-wrapper {
   width: 60%;
   margin-left: 10px;
+  height: 100%;
 }
 
 .ticker-wrapper {
@@ -338,18 +339,13 @@ textarea {
 .pagination button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  }
-  
-.custom-scrollbar::-webkit-scrollbar {
-  height: 4px; /* Altura mínima da barra de rolagem horizontal */
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: #15803ca4; /* Cor da barra de rolagem */
-  border-radius: 10px; /* Bordas arredondadas */
+tbody {
+  vertical-align: top;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background-color: #15803d; /* Cor da barra de rolagem ao passar o mouse */
+tr {
+  vertical-align: top;
 }
 </style>
