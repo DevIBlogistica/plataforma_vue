@@ -179,7 +179,7 @@ import Sidebar from '@/components/Sidebar.vue';
 import Ticker from '@/components/Ticker.vue';
 
 export default {
-  name: 'ControleEquipamentos',
+  name: 'ControleRetiradas',
   components: {
     Navbar,
     Sidebar,

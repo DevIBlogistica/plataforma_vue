@@ -6,9 +6,10 @@ import ControleAcesso from '@/views/ControleUsuarios.vue';
 import ChangePasswordPage from '@/views/ChangePasswordPage.vue';
 import TestPage from '@/views/TestPage.vue'; 
 import DashboardControle from '@/views/DashboardControle.vue';
-import ControleEquipamentos from '@/views/ControleEquipamentos.vue'
 import ControleUsuarios from '@/views/ControleUsuarios.vue';
 import ControleArquivos from '@/views/ControleArquivos.vue';
+import ControleRetiradas from '@/views/ControleRetiradas.vue';
+import CadastroEquipamentos from '@/views/CadastroEquipamentos.vue';
 
 
 
@@ -51,16 +52,20 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
-    path: '/controle-equipamentos',
-    name: 'ControleEquipamentos',
-    component: ControleEquipamentos
+    path: '/controle-retiradas',
+    name: 'ControleRetiradas',
+    component: ControleRetiradas
   },
   {
     path: '/controle-arquivos',
     name: 'ControleArquivos',
     component: ControleArquivos
-  }
-  
+  },
+  {
+    path: '/cadastro-equipamentos',
+    name: 'CadastroEquipamentos',
+    component: CadastroEquipamentos
+  },
 ];
 
 const router = createRouter({

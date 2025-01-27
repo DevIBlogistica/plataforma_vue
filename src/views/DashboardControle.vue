@@ -13,8 +13,17 @@
                 <p class="text-gray-600">Gerenciamento de usuários e permissões</p>
               </div>
             </div>
-            <!-- Card Equipamentos -->
-            <div @click="$router.push('/controle-equipamentos')" 
+            
+             <!-- Card Cadastro de Equipamentos -->
+             <div @click="$router.push('/cadastro-equipamentos')" 
+                 class="card hover:shadow-lg cursor-pointer">
+              <div class="p-6 text-center">
+                <h3 class="text-xl font-semibold text-black mb-4">Cadastro de Equipamentos</h3>
+                <p class="text-gray-600">Gerenciamento de cadastro de equipamentos</p>
+              </div>
+            </div>
+            <!-- Card Retirada de Equipamentos -->
+            <div @click="$router.push('/controle-retiradas')" 
                  class="card hover:shadow-lg cursor-pointer">
               <div class="p-6 text-center">
                 <h3 class="text-xl font-semibold text-black mb-4">Retirada de Equipamentos</h3>
