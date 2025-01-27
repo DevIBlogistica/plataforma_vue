@@ -472,6 +472,7 @@ export default {
   margin-top: 10px;
   font-size: 14px;
   font-weight: bold;
+  text-align: center;
 }
 
 .notification.error {

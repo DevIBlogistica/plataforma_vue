@@ -22,6 +22,7 @@
                       <option value="" disabled>Selecione a descrição</option>
                       <option value="Receptor JohnDeere Starfire 6000">Receptor JohnDeere Starfire 6000</option>
                       <option value="Rádio RTK JohnDeere">Rádio RTK JohnDeere</option>
+                      <option value="Trimble NAV-900">Trimble NAV-900</option>
                       <option value="Outro">Outro</option>
                     </select>
                   </div>
@@ -318,6 +319,7 @@ export default {
   margin-top: 10px;
   font-size: 14px;
   font-weight: bold;
+  text-align: center;
 }
 
 .notification.error {

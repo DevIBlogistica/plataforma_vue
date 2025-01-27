@@ -20,6 +20,9 @@
                 <div class="mb-5">
                   <input v-model="email" type="email" placeholder="Email" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
                 </div>
+                <div class="mb-5">
+                  <input v-model="senha" type="password" placeholder="Senha" class="w-full rounded border-[1.5px] text-black border-stroke bg-transparent py-3 px-5 font-normal outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-whiter dark:text-white dark:border-form-strokedark dark:bg-form-input dark:focus:border-primary" required />
+                </div>
                 <div class="mb-5.5">
                   <label for="adminProfile" class="mb-4.5 block text-sm font-medium text-black dark:text-white text-center">Permissão de usuário</label>
                   <div class="flex gap-2.5 justify-center">
@@ -60,7 +63,7 @@
               <h3 class="font-medium text-black dark:text-white text-center flex-grow">Usuários cadastrados</h3>
               <input v-model="searchQuery" placeholder="Pesquisar usuários..." class="border rounded px-2 py-1 w-64 text-sm" />
             </div>
-            <div class="p-1 h-full flex flex-col overflow-x-auto">
+            <div class="p-1 h-full flex flex-col overflow-x-auto custom-scrollbar">
               <div class="table-container flex-grow custom-scrollbar">
                 <table class="min-w-full divide-y divide-gray-200 h-full">
                   <thead>
@@ -160,6 +163,7 @@ export default {
     const nome = ref('');
     const cargo = ref('');
     const email = ref('');
+    const senha = ref('ib2025');
     const adminProfile = ref(false);
     const notification = ref({ message: "", type: "" });
     const users = ref([]);
@@ -184,7 +188,10 @@ export default {
         .from('profiles')
         .select('id, nome, cargo, adminProfile, user_email, ultimo_acesso, user_id');
       if (error) {
-        console.error('Erro ao buscar usuários:', error.message);
+        notification.value = { message: `Erro ao buscar usuários: ${error.message}`, type: 'error' };
+        setTimeout(() => {
+          notification.value = { message: "", type: "" };
+        }, 3000);
       } else {
         users.value = data.map(user => {
           const adjustedAccessTime = user.ultimo_acesso ? new Date(new Date(user.ultimo_acesso).getTime() - 3 * 60 * 60 * 1000) : null;
@@ -277,7 +284,7 @@ export default {
         // Criar novo usuário
         const { data, error } = await supabase.auth.signUp({
           email: email.value,
-          password: 'defaultPassword', // Use uma senha padrão ou gere uma senha temporária
+          password: senha.value, // Use a senha base
         });
 
         if (error) {
@@ -320,23 +327,14 @@ export default {
         notification.value = { message: 'Usuário criado com sucesso!', type: 'success' };
       }
 
-      setTimeout(() => {
-        notification.value = { message: "", type: "" };
-      }, 3000);
-
+      // Limpar campos do formulário
       nome.value = '';
       cargo.value = '';
       email.value = '';
+      senha.value = 'ib2025';
       adminProfile.value = false;
 
       fetchUsers();
-    };
-
-    const toggleActionMenu = (user) => {
-      users.value.forEach(u => {
-        if (u.id !== user.id) u.showActions = false;
-      });
-      user.showActions = !user.showActions;
     };
 
     const editUser = (user) => {
@@ -344,15 +342,7 @@ export default {
       cargo.value = user.cargo;
       email.value = user.email;
       adminProfile.value = user.adminProfile;
-      editingUserId.value = user.id; // Adicionar um estado para rastrear o usuário em edição
-    };
-
-    const cancelEdit = () => {
-      editingUserId.value = null;
-      nome.value = '';
-      cargo.value = '';
-      email.value = '';
-      adminProfile.value = false;
+      editingUserId.value = user.id;
     };
 
     const deleteUser = async (user) => {
@@ -369,21 +359,40 @@ export default {
 
           await fetchUsers();
 
-          alert('Usuário excluído com sucesso!');
+          notification.value = { message: 'Usuário excluído com sucesso!', type: 'success' };
         } catch (error) {
-          alert(`Erro ao excluir usuário: ${error.message}`);
+          notification.value = { message: `Erro ao excluir usuário: ${error.message}`, type: 'error' };
         }
+
+        setTimeout(() => {
+          notification.value = { message: "", type: "" };
+        }, 3000);
       }
     };
 
-    onMounted(() => {
-      fetchUsers();
-    });
+    const toggleActionMenu = (user) => {
+      users.value.forEach(u => {
+        if (u.id !== user.id) u.showActions = false;
+      });
+      user.showActions = !user.showActions;
+    };
+
+    const cancelEdit = () => {
+      editingUserId.value = null;
+      nome.value = '';
+      cargo.value = '';
+      email.value = '';
+      senha.value = 'ib2025';
+      adminProfile.value = false;
+    };
+
+    onMounted(fetchUsers);
 
     return {
       nome,
       cargo,
       email,
+      senha,
       adminProfile,
       notification,
       users,
@@ -393,10 +402,10 @@ export default {
       searchQuery,
       editingUserId,
       handleSubmit,
-      cancelEdit,
-      toggleActionMenu,
       editUser,
       deleteUser,
+      toggleActionMenu,
+      cancelEdit,
       filteredAndSortedUsers,
       formatDate,
     };
@@ -424,49 +433,13 @@ export default {
 }
 
 .form-container {
-  width: 40%;
+  width: 30%;
 }
 
 .table-wrapper {
-  width: 60%;
+  width: 70%;
   margin-left: 10px;
   height: 100%;
-}
-
-.ticker-wrapper {
-  width: 100%;
-  padding: 10px;
-}
-
-textarea {
-  resize: none;
-  overflow: hidden;
-}
-
-.message-box {
-  border: 1.5px solid var(--border-stroke);
-  border-radius: 0.375rem;
-  padding: 0.75rem;
-  background-color: var(--bg-transparent);
-  min-height: 180px;
-}
-
-.pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-tbody {
-  vertical-align: top;
-}
-
-tr {
-  vertical-align: top;
-}
-
-/* Custom scrollbar */
-.custom-scrollbar {
-  overflow-y: auto;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -480,5 +453,29 @@ tr {
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background-color: #15803d; /* Cor da barra de rolagem ao passar o mouse */
+}
+
+.notification {
+  margin-top: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.notification.error {
+  color: #e63946;
+}
+
+.notification.success {
+  color: #15803d;
+}
+
+.cancel-button {
+  background-color: rgb(239, 127, 26);
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: rgba(239, 127, 26, 0.9);
 }
 </style>
