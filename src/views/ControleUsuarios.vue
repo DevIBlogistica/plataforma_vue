@@ -47,26 +47,22 @@
                   {{ editingUserId ? 'Atualizar' : 'Cadastrar' }}
                 </button>
                 <button v-if="editingUserId" @click="cancelEdit" type="button" class="flex w-full justify-center rounded bg-secondary p-3 font-medium text-gray hover:bg-opacity-90 mt-2 cancel-button">
-  Cancelar
-</button>
+                  Cancelar
+                </button>
                 <p v-if="notification.message" :class="['notification', notification.type]">{{ notification.message }}</p>
               </div>
             </form>
           </div>
         </div>
-        <div class="table-wrapper">
-          <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+        <div class="table-wrapper flex-grow">
+          <div class="rounded-sm border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark h-full flex flex-col">
             <div class="border-b border-stroke py-4 px-6.5 dark:border-strokedark flex items-center justify-between">
               <h3 class="font-medium text-black dark:text-white text-center flex-grow">Usuários cadastrados</h3>
-              <input 
-                v-model="searchQuery" 
-                placeholder="Pesquisar usuários..." 
-                class="border rounded px-2 py-1 w-64 text-sm"
-              />
+              <input v-model="searchQuery" placeholder="Pesquisar usuários..." class="border rounded px-2 py-1 w-64 text-sm" />
             </div>
-            <div class="p-1">
-              <div class="table-container">
-                <table class="min-w-full divide-y divide-gray-200">
+            <div class="p-1 h-full flex flex-col overflow-x-auto">
+              <div class="table-container flex-grow custom-scrollbar">
+                <table class="min-w-full divide-y divide-gray-200 h-full">
                   <thead>
                     <tr>
                       <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome
@@ -93,8 +89,8 @@
                       <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
                     </tr>
                   </thead>
-                  <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="user in filteredAndSortedUsers" :key="user.id">
+                  <tbody class="bg-white divide-y divide-gray-200 h-full align-top">
+                    <tr v-for="user in filteredAndSortedUsers" :key="user.id" class="align-top">
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.nome }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.cargo }}</td>
                       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.email }}</td>
@@ -129,6 +125,11 @@
                     </tr>
                   </tbody>
                 </table>
+              </div>
+              <div class="pagination mt-4 flex justify-center">
+                <button @click="prevPage" :disabled="currentPage === 1" class="px-4 py-2 mx-1 bg-gray-200 rounded hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600">Anterior</button>
+                <span class="px-4 py-2 mx-1">{{ currentPage }} / {{ totalPages }}</span>
+                <button @click="nextPage" :disabled="currentPage === totalPages" class="px-4 py-2 mx-1 bg-gray-200 rounded hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600">Próxima</button>
               </div>
             </div>
           </div>
@@ -174,14 +175,8 @@ export default {
     };
 
     const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-      const hours = String(date.getHours()).padStart(2, '0');
-      const minutes = String(date.getMinutes()).padStart(2, '0');
-      const seconds = String(date.getSeconds()).padStart(2, '0');
-      return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+      const options = { year: 'numeric', month: 'long', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
     const fetchUsers = async () => {
@@ -217,7 +212,7 @@ export default {
           (user.ultimo_acesso ? formatDate(user.ultimo_acesso) : 'não acessado').toLowerCase().includes(query)
         );
       }
-      
+
       // Filtro de administrador
       if (adminFilter.value === 'admin') {
         result = result.filter(user => user.adminProfile);
@@ -243,99 +238,99 @@ export default {
           ? new Date(b.ultimo_acesso) - new Date(a.ultimo_acesso)
           : new Date(a.ultimo_acesso) - new Date(b.ultimo_acesso);
       });
-      
+
       return result;
     });
 
     const handleSubmit = async () => {
-  if (!validateEmail(email.value)) {
-    notification.value = { message: 'Email inválido.', type: 'error' };
-    setTimeout(() => {
-      notification.value = { message: "", type: "" };
-    }, 3000);
-    return;
-  }
-
-  if (editingUserId.value) {
-    // Atualizar usuário existente
-    const { error } = await supabase
-      .from('profiles')
-      .update({
-        nome: nome.value,
-        cargo: cargo.value,
-        user_email: email.value,
-        adminProfile: adminProfile.value,
-      })
-      .eq('id', editingUserId.value);
-
-    if (error) {
-      notification.value = { message: `Erro ao atualizar usuário: ${error.message}`, type: 'error' };
-      setTimeout(() => {
-        notification.value = { message: "", type: "" };
-      }, 3000);
-      return;
-    }
-
-    notification.value = { message: 'Usuário atualizado com sucesso!', type: 'success' };
-    editingUserId.value = null; // Limpar o estado de edição
-  } else {
-    // Criar novo usuário
-    const { data, error } = await supabase.auth.signUp({
-      email: email.value,
-      password: 'defaultPassword', // Use uma senha padrão ou gere uma senha temporária
-    });
-
-    if (error) {
-      notification.value = { message: `Erro ao criar usuário: ${error.message}`, type: 'error' };
-      setTimeout(() => {
-        notification.value = { message: "", type: "" };
-      }, 3000);
-      return;
-    }
-
-    let user = null;
-    while (!user) {
-      const { data: userData, error: userError } = await supabase.auth.getUser();
-      if (userError) {
-        notification.value = { message: `Erro ao obter usuário: ${userError.message}`, type: 'error' };
+      if (!validateEmail(email.value)) {
+        notification.value = { message: 'Email inválido.', type: 'error' };
         setTimeout(() => {
           notification.value = { message: "", type: "" };
         }, 3000);
         return;
       }
-      user = userData.user;
-    }
 
-    const uid = user.id;
+      if (editingUserId.value) {
+        // Atualizar usuário existente
+        const { error } = await supabase
+          .from('profiles')
+          .update({
+            nome: nome.value,
+            cargo: cargo.value,
+            user_email: email.value,
+            adminProfile: adminProfile.value,
+          })
+          .eq('id', editingUserId.value);
 
-    const { data: profileData, error: profileError } = await supabase
-      .from('profiles')
-      .insert([
-        { user_id: uid, nome: nome.value, cargo: cargo.value, user_email: email.value, adminProfile: adminProfile.value, firstLogin: true },
-      ]);
+        if (error) {
+          notification.value = { message: `Erro ao atualizar usuário: ${error.message}`, type: 'error' };
+          setTimeout(() => {
+            notification.value = { message: "", type: "" };
+          }, 3000);
+          return;
+        }
 
-    if (profileError) {
-      notification.value = { message: `Erro ao adicionar usuário na tabela profiles: ${profileError.message}`, type: 'error' };
+        notification.value = { message: 'Usuário atualizado com sucesso!', type: 'success' };
+        editingUserId.value = null; // Limpar o estado de edição
+      } else {
+        // Criar novo usuário
+        const { data, error } = await supabase.auth.signUp({
+          email: email.value,
+          password: 'defaultPassword', // Use uma senha padrão ou gere uma senha temporária
+        });
+
+        if (error) {
+          notification.value = { message: `Erro ao criar usuário: ${error.message}`, type: 'error' };
+          setTimeout(() => {
+            notification.value = { message: "", type: "" };
+          }, 3000);
+          return;
+        }
+
+        let user = null;
+        while (!user) {
+          const { data: userData, error: userError } = await supabase.auth.getUser();
+          if (userError) {
+            notification.value = { message: `Erro ao obter usuário: ${userError.message}`, type: 'error' };
+            setTimeout(() => {
+              notification.value = { message: "", type: "" };
+            }, 3000);
+            return;
+          }
+          user = userData.user;
+        }
+
+        const uid = user.id;
+
+        const { data: profileData, error: profileError } = await supabase
+          .from('profiles')
+          .insert([
+            { user_id: uid, nome: nome.value, cargo: cargo.value, user_email: email.value, adminProfile: adminProfile.value, firstLogin: true },
+          ]);
+
+        if (profileError) {
+          notification.value = { message: `Erro ao adicionar usuário na tabela profiles: ${profileError.message}`, type: 'error' };
+          setTimeout(() => {
+            notification.value = { message: "", type: "" };
+          }, 3000);
+          return;
+        }
+
+        notification.value = { message: 'Usuário criado com sucesso!', type: 'success' };
+      }
+
       setTimeout(() => {
         notification.value = { message: "", type: "" };
       }, 3000);
-      return;
-    }
 
-    notification.value = { message: 'Usuário criado com sucesso!', type: 'success' };
-  }
+      nome.value = '';
+      cargo.value = '';
+      email.value = '';
+      adminProfile.value = false;
 
-  setTimeout(() => {
-    notification.value = { message: "", type: "" };
-  }, 3000);
-
-  nome.value = '';
-  cargo.value = '';
-  email.value = '';
-  adminProfile.value = false;
-
-  fetchUsers();
-};
+      fetchUsers();
+    };
 
     const toggleActionMenu = (user) => {
       users.value.forEach(u => {
@@ -353,74 +348,58 @@ export default {
     };
 
     const cancelEdit = () => {
-  editingUserId.value = null;
-  nome.value = '';
-  cargo.value = '';
-  email.value = '';
-  adminProfile.value = false;
-};
+      editingUserId.value = null;
+      nome.value = '';
+      cargo.value = '';
+      email.value = '';
+      adminProfile.value = false;
+    };
 
     const deleteUser = async (user) => {
       const confirmDelete = confirm(`Tem certeza que deseja excluir o usuário ${user.nome}?`);
-      
+
       if (confirmDelete) {
         try {
-          // Primeiro, exclui da tabela de autenticação usando a função de serviço de admin
-          const { error: authError } = await supabase.auth.admin.deleteUser(user.user_id);
-          
-          if (authError) throw authError;
-
-          // Depois, exclui da tabela de perfis
-          const { error: profileError } = await supabase
+          const { error } = await supabase
             .from('profiles')
             .delete()
-            .eq('user_id', user.user_id);
-          
-          if (profileError) throw profileError;
+            .eq('id', user.id);
 
-          // Atualiza lista de usuários
+          if (error) throw error;
+
           await fetchUsers();
 
-          notification.value = { 
-            message: 'Usuário excluído com sucesso!', 
-            type: 'success' 
-          };
+          alert('Usuário excluído com sucesso!');
         } catch (error) {
-          notification.value = { 
-            message: `Erro ao excluir usuário: ${error.message}`, 
-            type: 'error' 
-          };
+          alert(`Erro ao excluir usuário: ${error.message}`);
         }
-
-        // Limpa notificação após 3 segundos
-        setTimeout(() => {
-          notification.value = { message: "", type: "" };
-        }, 3000);
       }
     };
 
-    onMounted(fetchUsers);
+    onMounted(() => {
+      fetchUsers();
+    });
 
     return {
-  nome,
-  cargo,
-  email,
-  adminProfile,
-  notification,
-  users,
-  sortOrder,
-  adminFilter,
-  lastAccessSort,
-  searchQuery,
-  handleSubmit,
-  formatDate,
-  filteredAndSortedUsers,
-  toggleActionMenu,
-  editUser,
-  cancelEdit,
-  deleteUser,
-  editingUserId
-};
+      nome,
+      cargo,
+      email,
+      adminProfile,
+      notification,
+      users,
+      sortOrder,
+      adminFilter,
+      lastAccessSort,
+      searchQuery,
+      editingUserId,
+      handleSubmit,
+      cancelEdit,
+      toggleActionMenu,
+      editUser,
+      deleteUser,
+      filteredAndSortedUsers,
+      formatDate,
+    };
   },
 };
 </script>
@@ -445,43 +424,61 @@ export default {
 }
 
 .form-container {
-  width: 30%;
-  margin: 0 auto;
+  width: 40%;
 }
 
 .table-wrapper {
-  width: 70%;
+  width: 60%;
   margin-left: 10px;
-}
-
-.table-container {
-  margin-top: 20px;
+  height: 100%;
 }
 
 .ticker-wrapper {
+  width: 100%;
   padding: 10px;
 }
 
-.notification {
-  margin-top: 10px;
-  font-size: 14px;
-  font-weight: bold;
+textarea {
+  resize: none;
+  overflow: hidden;
 }
 
-.notification.error {
-  color: #e63946;
+.message-box {
+  border: 1.5px solid var(--border-stroke);
+  border-radius: 0.375rem;
+  padding: 0.75rem;
+  background-color: var(--bg-transparent);
+  min-height: 180px;
 }
 
-.notification.success {
-  color: #15803d;
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.cancel-button {
-  background-color: rgb(239, 127, 26);
-  color: white;
+tbody {
+  vertical-align: top;
 }
 
-.cancel-button:hover {
-  background-color: rgba(239, 127, 26, 0.9);
+tr {
+  vertical-align: top;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar {
+  overflow-y: auto;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  height: 4px; /* Altura mínima da barra de rolagem horizontal */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: #15803ca4; /* Cor da barra de rolagem */
+  border-radius: 10px; /* Bordas arredondadas */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: #15803d; /* Cor da barra de rolagem ao passar o mouse */
 }
 </style>
