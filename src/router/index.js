@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router';
 import HomePage from '@/views/HomePage.vue';
 import ItemPage from '@/views/ItemPage.vue';
 import LoginPage from '@/views/LoginPage.vue';
-import ControleAcesso from '@/views/ControleUsuarios.vue';
 import ChangePasswordPage from '@/views/ChangePasswordPage.vue';
 import TestPage from '@/views/TestPage.vue'; 
 import DashboardControle from '@/views/DashboardControle.vue';
@@ -10,6 +9,7 @@ import ControleUsuarios from '@/views/ControleUsuarios.vue';
 import ControleArquivos from '@/views/ControleArquivos.vue';
 import ControleRetiradas from '@/views/ControleRetiradas.vue';
 import CadastroEquipamentos from '@/views/CadastroEquipamentos.vue';
+import ControleExames from '@/views/ControleExames.vue';
 
 
 
@@ -65,6 +65,11 @@ const routes = [
     path: '/cadastro-equipamentos',
     name: 'CadastroEquipamentos',
     component: CadastroEquipamentos
+  },
+  {
+    path: '/controle-exames',
+    name: 'ControleExames',
+    component: ControleExames
   },
 ];
 

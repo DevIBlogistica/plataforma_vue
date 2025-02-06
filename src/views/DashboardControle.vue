@@ -37,12 +37,21 @@
                 <h3 class="text-xl font-semibold text-black mb-4">Arquivos</h3>
                 <p class="text-gray-600">Gerenciamento de arquivos disponibilizados</p>
               </div>
+           
+          </div>
+              <!-- Card Exames -->
+              <div @click="$router.push('/controle-exames')" 
+                 class="card hover:shadow-lg cursor-pointer">
+              <div class="p-6 text-center">
+                <h3 class="text-xl font-semibold text-black mb-4">Exames</h3>
+                <p class="text-gray-600">Gerenciamento de exames dos colaboradores</p>
+              </div>
+            </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </template>
+   </template>
   
   <script>
   import Navbar from '@/components/Navbar.vue';
